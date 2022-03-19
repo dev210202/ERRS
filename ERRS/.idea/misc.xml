@@ -3,7 +3,10 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/@SourceTree/@ERRS/ERRS/app/src/main/res/drawable/customer_main_background.xml" value="0.26979166666666665" />
+        <entry key="..\:/@SourceTree/@ERRS/ERRS/app/src/main/res/drawable/customer_numbers_background.xml" value="0.26979166666666665" />
         <entry key="..\:/@SourceTree/@ERRS/ERRS/app/src/main/res/layout/activity_main.xml" value="0.1296875" />
+        <entry key="..\:/@SourceTree/@ERRS/ERRS/app/src/main/res/layout/activity_reservationholder_main.xml" value="0.152" />
       </map>
     </option>
   </component>

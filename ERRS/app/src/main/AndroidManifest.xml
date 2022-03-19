@@ -3,6 +3,7 @@
     package="jkey20.errs">
 
     <application
+        android:name="jkey20.errs.ERRSAplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -10,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ERRS">
         <activity
-            android:name=".reservationholder.main.MainActivity"
+            android:name="jkey20.errs.activity.reservationholder.main.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
