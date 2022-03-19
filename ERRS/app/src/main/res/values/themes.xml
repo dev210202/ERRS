@@ -10,12 +10,15 @@
         <item name="colorSecondaryVariant">@color/teal_700</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <item name="android:statusBarColor" tools:targetApi="l">@color/grey_light</item>
         <!-- Customize your theme here. -->
     </style>
 
     <style name="ShapeAppearance.MaterialComponents.MediumComponent.CardView" parent="">
-    <item name="cornerSize">16dp</item>
-        <item name="cornerFamily">cut</item>
-</style>
+        <item name="cornerSize">8dp</item>/
+        <item name="cornerFamily">rounded</item>
+    </style>
+    <style name="ShapeAppearance.MaterialComponents.Button" parent="">
+        <item name="materialThemeOverlay">@drawable/royal_blue_background</item>
+    </style>
 </resources>
