@@ -1,6 +1,6 @@
 package jkey20.errs.model.firebase
 
 data class Reservation(
-    val reservationNumber : Int = 0,
+    val reservationNumber : String = "",
     val order : Order = Order()
 )

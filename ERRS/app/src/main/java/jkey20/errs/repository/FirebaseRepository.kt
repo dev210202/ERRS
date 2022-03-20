@@ -1,5 +1,6 @@
 package jkey20.errs.repository
 
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import jkey20.errs.model.firebase.Reservation
@@ -25,4 +26,17 @@ class FirebaseRepository {
                     throw exception
                 }
         }
+
+    suspend fun readReservation(restaurantName: String): List<Reservation> =
+        suspendCancellableCoroutine { continuation ->
+            db.collection(restaurantName).get()
+                .addOnSuccessListener { result ->
+                    continuation.resume(result.documents.map(DocumentSnapshot::toObjectNonNull))
+                }
+                .addOnFailureListener { exception ->
+                    continuation.resume(emptyList())
+                    throw exception
+                }
+        }
+
 }
