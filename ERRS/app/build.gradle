@@ -75,5 +75,8 @@ dependencies {
 
     implementation 'com.google.firebase:firebase-storage-ktx'
     implementation 'com.google.firebase:firebase-firestore-ktx'
+
+    // coroutine
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0"
 }
 
