@@ -18,7 +18,9 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(private val repository: FirebaseRepository) :
     BaseViewModel() {
 
-    val restaurantName = "320"
+    private val _restaurantName = MutableStateFlow(String())
+    val restaurantName = _restaurantName.asStateFlow()
+
     val userUUID = ""
 
 
@@ -27,6 +29,16 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
     private val _reservationNumber = MutableStateFlow(String())
     val reservationNumber = _reservationNumber.asStateFlow()
 
+    private val _waitingTeamsNumber = MutableStateFlow(0)
+    val waitingTeamsNumber = _waitingTeamsNumber.asStateFlow()
+
+    fun setRestaurantName() = viewModelScope.launch {
+        _restaurantName.emit("320")
+    }
+
+    fun getRestaurantName() : String {
+        return _restaurantName.value
+    }
 
     fun addReservation(restaurantName: String, reservation: Reservation) = viewModelScope.launch {
         runCatching {
@@ -46,9 +58,7 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
         runCatching {
             repository.readReservation(restaurantName)
         }.onSuccess { reservationList ->
-            reservationList.forEach { reservation ->
-                Log.i("RESERVATION", reservation.toString())
-            }
+            _waitingTeamsNumber.emit(reservationList.size)
             if (reservationList.size > 0) {
                 _reservationNumber.emit((reservationList.size + 1).toString())
                 Log.i("readReservation1", "success")

@@ -1,6 +1,7 @@
 package jkey20.errs.activity.reservationholder.main
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.viewModels
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
@@ -28,21 +29,27 @@ class MainActivity : BaseActivity<ActivityReservationholderMainBinding, MainView
 
         // esl 인식시 레스토랑 이름가져와서 vm.restaurantName에 값 할당
 
-        vm.readReservation(vm.restaurantName)
+        vm.setRestaurantName()
 
-        // 예약 데이터 불러오기
+        // 값 할당시 예약 데이터 불러옴
+        vm.restaurantName.collectWithLifecycle(this){ restaurantName ->
+            if(restaurantName.isNotEmpty()){
+                vm.readReservation(restaurantName)
+            }
+        }
 
         // firebase에 예약 추가
         vm.reservationNumber.collectWithLifecycle(this) { reservationNumber ->
-            if (reservationNumber != "") {
+            if (reservationNumber.isNotEmpty()) {
                 vm.addReservation(
-                    vm.restaurantName,
+                    vm.getRestaurantName(),
                     Reservation(
                         reservationNumber = reservationNumber,
                     )
                 )
             }
         }
+
 
 
 //        vm.addReservation(
