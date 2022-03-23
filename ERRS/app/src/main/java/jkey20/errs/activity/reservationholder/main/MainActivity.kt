@@ -1,6 +1,7 @@
 package jkey20.errs.activity.reservationholder.main
 
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import androidx.activity.viewModels
 import androidx.lifecycle.flowWithLifecycle
@@ -25,16 +26,16 @@ class MainActivity : BaseActivity<ActivityReservationholderMainBinding, MainView
         super.onCreate(savedInstanceState)
 
         // 기기 UUID 불러와서 vm.userUUID에 값 할당
-        vm.getDeviceUUID()
-
+        vm.setDeviceUUID(getUUID())
         // esl 인식시 레스토랑 이름가져와서 vm.restaurantName에 값 할당
 
-        vm.setRestaurantName()
+        vm.setRestaurantName("320")
 
         // 값 할당시 예약 데이터 불러옴
         vm.restaurantName.collectWithLifecycle(this){ restaurantName ->
             if(restaurantName.isNotEmpty()){
                 vm.readReservation(restaurantName)
+                vm.addRealtimeWaitingTeamsUpdate(restaurantName)
             }
         }
 
@@ -50,7 +51,14 @@ class MainActivity : BaseActivity<ActivityReservationholderMainBinding, MainView
             }
         }
 
-
+        binding.btnOrder.setOnClickListener {
+            vm.addReservation(
+                vm.getRestaurantName(),
+                Reservation(
+                    reservationNumber = vm.getMyWaitingTeamsNumber(),
+                )
+            )
+        }
 
 //        vm.addReservation(
 //            "restaurantName1",
@@ -68,5 +76,9 @@ class MainActivity : BaseActivity<ActivityReservationholderMainBinding, MainView
 //            )
 //        )
 
+    }
+
+    private fun getUUID() : String{
+        return android.provider.Settings.Secure.getString(this.contentResolver, Settings.Secure.ANDROID_ID)
     }
 }

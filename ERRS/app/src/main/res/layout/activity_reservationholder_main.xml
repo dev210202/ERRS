@@ -25,7 +25,7 @@
             android:layout_marginEnd="16dp"
             android:fontFamily="@font/nanumsquare_b"
             android:gravity="left"
-            android:text="식당 이름"
+            android:text="@{vm.reservationNumber}"
             android:textColor="@color/white"
             android:textSize="24dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -105,7 +105,7 @@
                             android:fontFamily="@font/sunflower_m"
                             android:gravity="center"
                             android:padding="8dp"
-                            android:text="10"
+                            android:text="@{vm.waitingTeamsNumber.toString()}"
                             android:textColor="@color/white"
                             android:textSize="36dp"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -158,7 +158,7 @@
                         android:layout_marginStart="16dp"
                         android:layout_marginEnd="16dp"
                         android:fontFamily="@font/sunflower_m"
-                        android:text="10"
+                        android:text="@{vm.waitingTeamsNumber.toString()}"
                         android:textColor="@color/black"
                         android:textSize="36dp"
                         app:layout_constraintBottom_toBottomOf="@+id/tv_waiting_number_text"
@@ -184,7 +184,7 @@
             android:layout_height="0dp"
             android:layout_margin="16dp"
             app:cardElevation="10dp"
-            app:layout_constraintBottom_toTopOf="@+id/materialButton4"
+            app:layout_constraintBottom_toTopOf="@+id/btn_order"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cv_waiting_teams"
@@ -226,7 +226,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/sunflower_m"
-                        android:text="60"
+                        android:text="@{vm.reservationNumber.toString()}"
                         android:textColor="@color/orange"
 
                         android:textSize="36dp"
@@ -250,7 +250,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/container_reservation_number" />
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/materialButton3"
+                    android:id="@+id/btn_reservation_cancel"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
 
@@ -270,7 +270,7 @@
                     android:layout_marginEnd="16dp"
                     android:layout_marginBottom="8dp"
                     android:background="@drawable/customer_numbers_background"
-                    app:layout_constraintBottom_toTopOf="@+id/materialButton3"
+                    app:layout_constraintBottom_toTopOf="@+id/btn_reservation_cancel"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/materialTextView" />
@@ -283,7 +283,7 @@
 
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/materialButton4"
+            android:id="@+id/btn_order"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
