@@ -31,54 +31,46 @@ class MainActivity : BaseActivity<ActivityReservationholderMainBinding, MainView
 
         vm.setRestaurantName("320")
 
-        // 값 할당시 예약 데이터 불러옴
-        vm.restaurantName.collectWithLifecycle(this){ restaurantName ->
-            if(restaurantName.isNotEmpty()){
-                vm.readReservation(restaurantName)
-                vm.addRealtimeWaitingTeamsUpdate(restaurantName)
+        // TODO 1: 예약번호 지정
+        vm.restaurantName.collectWithLifecycle(this) { restaurantName ->
+            if (restaurantName.isNotEmpty()) {
+                vm.setReservationNumber(restaurantName)
             }
         }
 
-        // firebase에 예약 추가
+        // TODO 3: firebase에 예약 및 실시간 대기팀, 대기순번 불러오기
         vm.reservationNumber.collectWithLifecycle(this) { reservationNumber ->
             if (reservationNumber.isNotEmpty()) {
+
                 vm.addReservation(
-                    vm.getRestaurantName(),
+                    vm.loadRestaurantName(),
                     Reservation(
                         reservationNumber = reservationNumber,
                     )
                 )
+
+
+                vm.addRealtimeMyWaitingNumber(vm.loadRestaurantName())
+                vm.addRealtimeWaitingTeamsUpdate(vm.loadRestaurantName())
+
             }
         }
 
         binding.btnOrder.setOnClickListener {
+
             vm.addReservation(
-                vm.getRestaurantName(),
+                vm.loadRestaurantName(),
                 Reservation(
-                    reservationNumber = vm.getMyWaitingTeamsNumber(),
+                    reservationNumber = "999",
                 )
             )
         }
-
-//        vm.addReservation(
-//            "restaurantName1",
-//            Reservation(
-//                reservationNumber = "1",
-//                Order(
-//                    Menu(
-//                        name = "삼각김밥",
-//                        price = 3000,
-//                        pay = "완료",
-//                        option = listOf()
-//                    ),
-//                    request = "요청사항"
-//                )
-//            )
-//        )
-
     }
 
-    private fun getUUID() : String{
-        return android.provider.Settings.Secure.getString(this.contentResolver, Settings.Secure.ANDROID_ID)
+    private fun getUUID(): String {
+        return android.provider.Settings.Secure.getString(
+            this.contentResolver,
+            Settings.Secure.ANDROID_ID
+        )
     }
 }

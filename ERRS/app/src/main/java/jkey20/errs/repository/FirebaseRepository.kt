@@ -1,6 +1,7 @@
 package jkey20.errs.repository
 
 import android.util.Log
+import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -47,16 +48,66 @@ class FirebaseRepository {
                 }
         }
 
+    /*
+     처음 대기순번이 없을때
+     - 예약번호를 기준으로 나보다 앞에 몇명이 있는지 체크
 
-    suspend fun readRealtimeWaitingTeamsUpdate(restaurantName: String) = callbackFlow {
-        try{
+      대기순번 존재 이후
+      - 나보다 앞의 번호가 취소하면 대기순번 감소!
+     */
+    suspend fun readRealtimeMyWaitingNumber(
+        restaurantName: String,
+        reservationNumber: String,
+        myWaitingNumber: String
+    ) = callbackFlow {
+        try {
             db.collection(restaurantName).addSnapshotListener { value, error ->
                 if (error != null) {
                     throw error
                 }
-                trySend(value!!.size().toString())
+                // 처음 대기순번이 없을 때
+                if (myWaitingNumber == "0") {
+                    var waitingNumber = 0
+                    for (doc in value!!.documents) {
+                        if (doc.get("reservationNumber").toString()
+                                .toInt() < reservationNumber.toInt()
+                        ) {
+                            waitingNumber++
+                        }
+                    }
+                    trySend(waitingNumber.toString())
+                } else // 대기순번 존재
+                    for (dc in value!!.documentChanges) {
+                        when (dc.type) {
+                            DocumentChange.Type.REMOVED -> {
+                                Log.e("DC REMOVED", dc.document.data.toString())
+                                val removeData: String =
+                                    dc.document.data.get("reservationNumber").toString()
+                                // 지워진 데이터의 예약번호가 나보다 앞일떄(작을때)
+                                if (removeData.toInt() < reservationNumber.toInt()) {
+                                    trySend((myWaitingNumber.toInt() - 1).toString())
+                                }
+                            }
+                        }
+                    }
             }
-        }catch (exception: Exception){
+        } catch (exception: Exception) {
+            trySend(exception.toString())
+        }
+        awaitClose()
+    }
+
+    suspend fun readRealtimeWaitingTeamsUpdate(restaurantName: String) = callbackFlow {
+        try {
+            db.collection(restaurantName).addSnapshotListener { value, error ->
+                if (value != null) {
+                    trySend(value.size().toString())
+                }
+                if (error != null) {
+                    throw error
+                }
+            }
+        } catch (exception: Exception) {
             trySend(exception.toString())
         }
         awaitClose()

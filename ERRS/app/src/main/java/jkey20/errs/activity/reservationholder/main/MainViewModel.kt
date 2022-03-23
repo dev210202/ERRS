@@ -32,17 +32,17 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
     val reservationNumber = _reservationNumber.asStateFlow()
 
     // 현재 대기 팀 수
-    private val _waitingTeamsNumber = MutableStateFlow("")
+    private val _waitingTeamsNumber = MutableStateFlow("0")
     val waitingTeamsNumber = _waitingTeamsNumber.asStateFlow()
 
-    private val _myWaitingNumber = MutableStateFlow(0)
+    private val _myWaitingNumber = MutableStateFlow("0")
     val myWaitingNumber = _myWaitingNumber.asStateFlow()
 
     fun setRestaurantName(restaurantName: String) = viewModelScope.launch {
         _restaurantName.emit(restaurantName)
     }
 
-    fun getRestaurantName(): String {
+    fun loadRestaurantName(): String {
         return _restaurantName.value
     }
 
@@ -55,38 +55,21 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
         return _deviceUUID.value
     }
 
-    //    fun setReservationNumber(reservationNumber: String) = viewModelScope.launch {
-//        _reservationNumber.emit(reservationNumber)
-//    }
-//
-//    fun getReservationNumber(): String {
-//        return _reservationNumber.value
-//    }
-//
-//    fun setWaitingTeamsNumber(waitingTeamsNumber: Int) = viewModelScope.launch {
-//        _waitingTeamsNumber.emit(waitingTeamsNumber)
-//    }
-//
-//    fun getWaitingTeamsNumber(): String {
-//        return _waitingTeamsNumber.value.toString()
-//    }
-//
-//    fun setMyWaitingTeamsNumber(myWaitingNumber: Int) = viewModelScope.launch {
-//        _myWaitingNumber.emit(myWaitingNumber)
-//    }
-//
-    fun getMyWaitingTeamsNumber(): String {
+    fun loadReservationNumber(): String {
+        return _reservationNumber.value
+    }
+
+    fun loadMyWaitingTeamsNumber(): String {
         return _myWaitingNumber.value.toString()
     }
 
-
+    // TODO 4: 예약 추가
     fun addReservation(restaurantName: String, reservation: Reservation) = viewModelScope.launch {
         runCatching {
-            repository.createReservation(restaurantName, reservation, Math.random().toString())
+            repository.createReservation(restaurantName, reservation, Math.random().toString()) // random -> UUID로 변경하기
         }.onSuccess { isSuccess ->
-            Log.i("addReservation", isSuccess.toString())
+            Log.i("예약추가 성공", isSuccess.toString())
             if (isSuccess) {
-
             }
         }.onFailure { error ->
             Log.e("error", error.message.toString())
@@ -94,30 +77,49 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
 
     }
 
-    fun readReservation(restaurantName: String) = viewModelScope.launch {
+    // TODO 2: 예약번호 지정
+    fun setReservationNumber(restaurantName: String) = viewModelScope.launch {
         runCatching {
             repository.readReservation(restaurantName)
         }.onSuccess { reservationList ->
-            _myWaitingNumber.emit(reservationList.size)
-            // _waitingTeamsNumber.emit(reservationList.size)
+
+            // TODO 2-1: 최대한 큰 예약번호의 다음번호로 예약번호 지정
             if (reservationList.size > 0) {
-                _reservationNumber.emit((reservationList.size + 1).toString())
-                Log.i("readReservation1", "success")
+                var topNumber = "0"
+                reservationList.forEach { reservation ->
+                    if (reservation.reservationNumber.toInt() >= topNumber.toInt()) {
+                        topNumber = reservation.reservationNumber
+                    }
+                }
+                _reservationNumber.emit((topNumber.toInt() + 1).toString())
             } else {
                 _reservationNumber.emit("1")
-                Log.i("readReservation2", "success")
             }
         }.onFailure { error ->
             Log.e("error", error.message.toString())
         }
     }
 
+
+    // TODO 6: 대기순번 업데이트
+    fun addRealtimeMyWaitingNumber(restaurantName: String) = viewModelScope.launch {
+        repository.readRealtimeMyWaitingNumber(
+            restaurantName,
+            loadReservationNumber(),
+            loadMyWaitingTeamsNumber()
+        ).collect { myWaitingNumber ->
+            Log.e("나의 대기순번: ", myWaitingNumber)
+            _myWaitingNumber.emit(myWaitingNumber)
+
+        }
+    }
+
+    // TODO 5: 대기팀 수  업데이트
     fun addRealtimeWaitingTeamsUpdate(restaurantName: String) = viewModelScope.launch {
         repository.readRealtimeWaitingTeamsUpdate(restaurantName).collect { waitingTeamsNumber ->
-            Log.e("waitingTeamsNumber: ", waitingTeamsNumber)
+            Log.e("대기팀수 업데이트: ", waitingTeamsNumber)
             _waitingTeamsNumber.emit(waitingTeamsNumber)
         }
-
     }
 
     fun perceiveESL(): String {
@@ -125,6 +127,5 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
         val restaurantName = ""
         return restaurantName
     }
-
 
 }
