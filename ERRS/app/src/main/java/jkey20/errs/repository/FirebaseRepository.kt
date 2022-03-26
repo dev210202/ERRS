@@ -48,6 +48,16 @@ class FirebaseRepository {
                 }
         }
 
+    suspend fun deleteReservation(restaurantName: String, uuid: String): Boolean =
+        suspendCancellableCoroutine { continuation ->
+            db.collection(restaurantName).document(uuid).delete().addOnSuccessListener {
+                continuation.resume(true)
+            }.addOnFailureListener { exception ->
+                continuation.resume(false)
+                throw  exception
+            }
+        }
+
     /*
      처음 대기순번이 없을때
      - 예약번호를 기준으로 나보다 앞에 몇명이 있는지 체크

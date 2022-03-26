@@ -66,7 +66,7 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
     // TODO 4: 예약 추가
     fun addReservation(restaurantName: String, reservation: Reservation) = viewModelScope.launch {
         runCatching {
-            repository.createReservation(restaurantName, reservation, Math.random().toString()) // random -> UUID로 변경하기
+            repository.createReservation(restaurantName, reservation, getDeviceUUID()) // TODO: random -> UUID로 변경하기
         }.onSuccess { isSuccess ->
             Log.i("예약추가 성공", isSuccess.toString())
             if (isSuccess) {
@@ -75,6 +75,20 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
             Log.e("error", error.message.toString())
         }
 
+    }
+
+    fun cancelReservation(restaurantName: String) = viewModelScope.launch {
+        runCatching{
+            repository.deleteReservation(restaurantName, getDeviceUUID())
+        }.onSuccess { isSuccess ->
+            Log.i("예약취소 성공", isSuccess.toString())
+            if(isSuccess){
+
+            }
+
+        }.onFailure { error ->
+            Log.e("예약취소 에러", error.message.toString())
+        }
     }
 
     // TODO 2: 예약번호 지정

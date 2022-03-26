@@ -29,7 +29,7 @@ class MainActivity : BaseActivity<ActivityReservationholderMainBinding, MainView
         vm.setDeviceUUID(getUUID())
         // esl 인식시 레스토랑 이름가져와서 vm.restaurantName에 값 할당
 
-        vm.setRestaurantName("320")
+        vm.setRestaurantName("320") // TODO: ESL에서 가져온 식당 이름 적용시키기
 
         // TODO 1: 예약번호 지정
         vm.restaurantName.collectWithLifecycle(this) { restaurantName ->
@@ -54,6 +54,11 @@ class MainActivity : BaseActivity<ActivityReservationholderMainBinding, MainView
                 vm.addRealtimeWaitingTeamsUpdate(vm.loadRestaurantName())
 
             }
+        }
+
+        binding.btnReservationCancel.setOnClickListener {
+            vm.cancelReservation(vm.loadRestaurantName())
+            // TODO: 예약취소이후 앱 종료
         }
 
         binding.btnOrder.setOnClickListener {
