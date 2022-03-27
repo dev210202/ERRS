@@ -1,6 +1,6 @@
 package jkey20.errs.model.firebase
 
 data class Order(
-    val menu : Menu = Menu(),
+    val menuList : List<Menu> = listOf(),
     val request : String = "",
 )

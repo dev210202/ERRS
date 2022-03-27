@@ -263,6 +263,7 @@
                     app:layout_constraintStart_toStartOf="parent" />
 
                 <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_orders_staus"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_marginStart="16dp"
@@ -270,6 +271,7 @@
                     android:layout_marginEnd="16dp"
                     android:layout_marginBottom="8dp"
                     android:background="@drawable/customer_numbers_background"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintBottom_toTopOf="@+id/btn_reservation_cancel"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

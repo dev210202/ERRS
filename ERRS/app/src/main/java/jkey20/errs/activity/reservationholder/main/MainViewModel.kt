@@ -46,6 +46,10 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
         return _restaurantName.value
     }
 
+    fun loadReservation() : Reservation {
+        return _reservation.value
+    }
+
     fun setDeviceUUID(uuid: String) = viewModelScope.launch {
         Log.i("UUID", uuid)
         _deviceUUID.emit(uuid)
@@ -60,7 +64,7 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
     }
 
     fun loadMyWaitingTeamsNumber(): String {
-        return _myWaitingNumber.value.toString()
+        return _myWaitingNumber.value
     }
 
     // TODO 4: 예약 추가
@@ -70,6 +74,7 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
         }.onSuccess { isSuccess ->
             Log.i("예약추가 성공", isSuccess.toString())
             if (isSuccess) {
+                _reservation.emit(reservation)
             }
         }.onFailure { error ->
             Log.e("error", error.message.toString())
