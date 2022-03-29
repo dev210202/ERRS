@@ -46,7 +46,7 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
         return _restaurantName.value
     }
 
-    fun loadReservation() : Reservation {
+    fun loadReservation(): Reservation {
         return _reservation.value
     }
 
@@ -70,7 +70,11 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
     // TODO 4: 예약 추가
     fun addReservation(restaurantName: String, reservation: Reservation) = viewModelScope.launch {
         runCatching {
-            repository.createReservation(restaurantName, reservation, getDeviceUUID()) // TODO: random -> UUID로 변경하기
+            repository.createReservation(
+                restaurantName,
+                reservation,
+                getDeviceUUID()
+            ) // TODO: random -> UUID로 변경하기
         }.onSuccess { isSuccess ->
             Log.i("예약추가 성공", isSuccess.toString())
             if (isSuccess) {
@@ -83,11 +87,11 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
     }
 
     fun cancelReservation(restaurantName: String) = viewModelScope.launch {
-        runCatching{
+        runCatching {
             repository.deleteReservation(restaurantName, getDeviceUUID())
         }.onSuccess { isSuccess ->
             Log.i("예약취소 성공", isSuccess.toString())
-            if(isSuccess){
+            if (isSuccess) {
 
             }
 
@@ -138,6 +142,37 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
         repository.readRealtimeWaitingTeamsUpdate(restaurantName).collect { waitingTeamsNumber ->
             Log.e("대기팀수 업데이트: ", waitingTeamsNumber)
             _waitingTeamsNumber.emit(waitingTeamsNumber)
+        }
+    }
+
+    // TODO: 내 주문 업데이트
+    fun addRealtimeMyOrder(){
+
+    }
+
+    fun cancelOrderMenu(restaurantName: String) = viewModelScope.launch {
+        runCatching {
+            repository.deleteOrderMenu(restaurantName, getDeviceUUID(), loadReservationOrder())
+        }.onSuccess { isSuccess ->
+            Log.i("메뉴주문취소 성공", isSuccess.toString())
+        }.onFailure { error ->
+            Log.e("메뉴주문 취소 error", error.message.toString())
+        }
+    }
+
+    fun loadReservationOrder() : Order{
+        return _reservation.value.order
+    }
+
+    fun editReservationOrder(deleteMenu: Menu){
+        _reservation.value.order.menuList.forEach { menu ->
+            Log.i("menu",menu.name)
+            if(menu.equals(deleteMenu)){
+                val list = _reservation.value.order.menuList.toMutableList()
+                list.remove(menu)
+                _reservation.value.order.menuList = list
+                Log.e("SIZE", ""+_reservation.value.order.menuList.size)
+            }
         }
     }
 

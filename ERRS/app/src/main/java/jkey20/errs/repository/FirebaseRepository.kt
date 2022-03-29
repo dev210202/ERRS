@@ -3,8 +3,11 @@ package jkey20.errs.repository
 import android.util.Log
 import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import jkey20.errs.model.firebase.Menu
+import jkey20.errs.model.firebase.Order
 import jkey20.errs.model.firebase.Reservation
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.*
@@ -122,5 +125,16 @@ class FirebaseRepository {
         }
         awaitClose()
     }
+
+    suspend fun deleteOrderMenu(restaurantName: String, uuid: String, order : Order): Boolean =
+        suspendCancellableCoroutine { continuation ->
+            db.collection(restaurantName).document(uuid)
+                .update("order", order).addOnSuccessListener {
+                    continuation.resume(true)
+                }.addOnFailureListener { exception ->
+                    continuation.resume(false)
+                    throw  exception
+                }
+        }
 
 }

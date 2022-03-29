@@ -41,6 +41,11 @@ class MainActivity : BaseActivity<ActivityReservationholderMainBinding, MainView
             setItemViewCacheSize(10)
             addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
             adapter = OrdersStatusAdapter(
+                onMenuOrderButtonClick = { menu ->
+                    // TODO : 메뉴주문취소
+                    vm.editReservationOrder(menu)
+                    vm.cancelOrderMenu(vm.loadRestaurantName())
+                }
             ).apply {
                 submitList(vm.loadReservation().order.menuList)
             }
@@ -78,7 +83,7 @@ class MainActivity : BaseActivity<ActivityReservationholderMainBinding, MainView
                 vm.addRealtimeWaitingTeamsUpdate(vm.loadRestaurantName())
             }
         }
-        vm.reservation.collectWithLifecycle(this){ reservation ->
+        vm.reservation.collectWithLifecycle(this) { reservation ->
             (binding.rvOrdersStaus.adapter as OrdersStatusAdapter).submitList(reservation.order.menuList)
         }
 

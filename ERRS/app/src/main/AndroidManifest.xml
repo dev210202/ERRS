@@ -15,9 +15,7 @@
         android:theme="@style/Theme.ERRS">
         <activity
             android:name=".activity.reservationholder.menu.MenuActivity"
-            android:exported="false"
-            android:label="@string/title_activity_menu"
-            android:theme="@style/Theme.ERRS.NoActionBar" />
+            android:exported="true"/>
         <activity
             android:name=".activity.reservationholder.main.MainActivity"
             android:exported="true">
