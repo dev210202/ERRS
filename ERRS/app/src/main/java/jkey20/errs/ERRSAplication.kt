@@ -1,4 +1,4 @@
-package jkey20.errs.reservationholder
+package jkey20.errs
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp

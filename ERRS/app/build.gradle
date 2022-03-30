@@ -1,10 +1,9 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
-    // hilt
-    id 'dagger.hilt.android.plugin'
-    // add kapt
     id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
+    id 'com.google.gms.google-services'
 }
 
 android {
@@ -64,8 +63,20 @@ dependencies {
 
     // ktx
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.1'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.0-alpha04'
     implementation 'androidx.activity:activity-ktx:1.4.0'
     implementation 'androidx.fragment:fragment-ktx:1.4.1'
+
+    //material design
+    api 'com.google.android.material:material:1.1.0-alpha06'
+
+    //firebase
+    implementation platform('com.google.firebase:firebase-bom:29.1.0')
+
+    implementation 'com.google.firebase:firebase-storage-ktx'
+    implementation 'com.google.firebase:firebase-firestore-ktx'
+
+    // coroutine
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0"
 }
 

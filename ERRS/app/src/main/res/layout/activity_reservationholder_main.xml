@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="vm"
+            type="jkey20.errs.activity.reservationholder.main.MainViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/grey_light"
+        tools:context=".activity.reservationholder.main.MainActivity">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_restaurant_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:fontFamily="@font/nanumsquare_b"
+            android:gravity="left"
+            android:text="@{vm.restaurantName}"
+            android:textColor="@color/white"
+            android:textSize="24dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="50dp"
+            android:layout_height="2dp"
+            android:layout_marginTop="8dp"
+
+            android:background="@color/white"
+            app:layout_constraintStart_toStartOf="@+id/tv_restaurant_name"
+            app:layout_constraintTop_toBottomOf="@+id/tv_restaurant_name"
+            android:orientation="horizontal" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_marginTop="16dp"
+            android:id="@+id/cv_waiting_teams"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            app:cardElevation="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+            app:shapeAppearance="@style/ShapeAppearance.MaterialComponents.MediumComponent.CardView">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/container_waiting_teams"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/container_waiting_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="24dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/tv_realtime_waiting_teams_text"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/nanumsquare_b"
+                        android:gravity="center"
+                        android:text="현재 대기 팀 수"
+                        android:textColor="@color/grey_dark"
+                        android:textSize="36dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/materialCardView3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:cardElevation="5dp"
+                        app:layout_constraintBottom_toBottomOf="@+id/tv_realtime_waiting_teams_text"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/tv_realtime_waiting_teams_text"
+                        app:shapeAppearance="@style/ShapeAppearance.MaterialComponents.MediumComponent.CardView">
+
+
+                        <TextView
+                            android:id="@+id/tv_realtime_waiting_teams_value"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@color/blue"
+                            android:fontFamily="@font/sunflower_m"
+                            android:gravity="center"
+                            android:padding="8dp"
+                            android:text="@{vm.waitingTeamsNumber.toString()}"
+                            android:textColor="@color/white"
+                            android:textSize="36dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="3dp"
+                        android:layout_marginTop="8dp"
+                        android:background="@drawable/blue_gradient_background"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/materialCardView3" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:id="@+id/container_waiting_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/container_waiting_info">
+
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/tv_my_waiting_number_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/nanumsquare_eb"
+                        android:text="나의 대기순번"
+                        android:textColor="@color/black"
+                        android:textSize="24dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/tv_my_waiting_number_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:fontFamily="@font/sunflower_m"
+                        android:text="@{vm.myWaitingNumber}"
+                        android:textColor="@color/black"
+                        android:textSize="36dp"
+                        app:layout_constraintBottom_toBottomOf="@+id/tv_my_waiting_number_text"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/tv_my_waiting_number_text"
+                        app:layout_constraintTop_toTopOf="@+id/tv_my_waiting_number_text" />
+
+                    <LinearLayout
+                        android:layout_width="48dp"
+                        android:layout_height="2dp"
+                        android:layout_marginStart="4dp"
+                        android:background="@color/black"
+                        app:layout_constraintEnd_toEndOf="@+id/tv_my_waiting_number_value"
+                        app:layout_constraintStart_toStartOf="@+id/tv_my_waiting_number_value"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_my_waiting_number_value" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/materialCardView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="16dp"
+            app:cardElevation="10dp"
+            app:layout_constraintBottom_toTopOf="@+id/btn_order"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cv_waiting_teams"
+
+            app:shapeAppearance="@style/ShapeAppearance.MaterialComponents.MediumComponent.CardView">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/container_waiting_customer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+
+                    android:id="@+id/container_reservation_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/tv_reservation_number_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="16dp"
+                        android:fontFamily="@font/nanumsquare_eb"
+                        android:text="예약번호"
+                        android:textColor="@color/black"
+                        android:textSize="24dp"
+                        app:layout_constraintBottom_toBottomOf="@+id/tv_reservation_number_value"
+                        app:layout_constraintEnd_toStartOf="@+id/tv_reservation_number_value"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/tv_reservation_number_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/sunflower_m"
+                        android:text="@{vm.reservationNumber.toString()}"
+                        android:textColor="@color/orange"
+
+                        android:textSize="36dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/materialTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:fontFamily="@font/nanumsquare_r"
+                    android:text="주문 접수상태"
+                    android:textColor="@color/black"
+                    android:textSize="16dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/container_reservation_number" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_reservation_cancel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+
+                    android:background="@drawable/blue_gradient_background"
+                    android:fontFamily="@font/nanumsquare_r"
+                    android:text="예약취소"
+                    app:backgroundTint="@null"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_orders_staus"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/customer_numbers_background"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintBottom_toTopOf="@+id/btn_reservation_cancel"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/materialTextView" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </com.google.android.material.card.MaterialCardView>
+
+
+
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_order"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="@color/white"
+            android:text="주문하기"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</layout>
