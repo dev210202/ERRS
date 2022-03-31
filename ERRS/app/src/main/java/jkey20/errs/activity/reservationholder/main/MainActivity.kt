@@ -43,8 +43,8 @@ class MainActivity : BaseActivity<ActivityReservationholderMainBinding, MainView
             adapter = OrdersStatusAdapter(
                 onMenuOrderButtonClick = { menu ->
                     // TODO : 메뉴주문취소
-                    vm.editReservationOrder(menu)
-                    vm.cancelOrderMenu(vm.loadRestaurantName())
+
+                    vm.cancelOrderMenu(vm.loadRestaurantName(), vm.editReservationOrder(menu))
                 }
             ).apply {
                 submitList(vm.loadReservation().order.menuList)
@@ -84,6 +84,7 @@ class MainActivity : BaseActivity<ActivityReservationholderMainBinding, MainView
             }
         }
         vm.reservation.collectWithLifecycle(this) { reservation ->
+            Log.e("RESERVATION COLLECT", "!!")
             (binding.rvOrdersStaus.adapter as OrdersStatusAdapter).submitList(reservation.order.menuList)
         }
 
