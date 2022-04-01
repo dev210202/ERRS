@@ -73,7 +73,7 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
             repository.createReservation(
                 restaurantName,
                 reservation,
-                getDeviceUUID()
+                "999"
             ) // TODO: random -> UUID로 변경하기
         }.onSuccess { isSuccess ->
             Log.i("예약추가 성공", isSuccess.toString())

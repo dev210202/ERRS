@@ -20,7 +20,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
         super.onCreate(savedInstanceState)
 
         vm.getReservationList("320")
-
+        vm.getRealtimeChanges("320")
         binding.rvReservation.run {
             setHasFixedSize(true)
             setItemViewCacheSize(10)
@@ -32,6 +32,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
         }
 
         vm.reservationList.collectWithLifecycle(this) { reservationList ->
+
             if (reservationList.isNotEmpty()) {
                 (binding.rvReservation.adapter as OrderAdapter).submitList(reservationList)
                 Log.e("reservation", "!!")

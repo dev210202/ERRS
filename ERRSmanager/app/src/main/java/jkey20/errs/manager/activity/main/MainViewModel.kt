@@ -12,7 +12,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(private val repository: FirebaseRepository) : BaseViewModel() {
+class MainViewModel @Inject constructor(private val repository: FirebaseRepository) :
+    BaseViewModel() {
 
     private val _restaurantName = MutableStateFlow(String())
     val restaurantName = _restaurantName.asStateFlow()
@@ -20,17 +21,27 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
     private val _reservationList = MutableStateFlow(listOf<Reservation>())
     val reservationList = _reservationList.asStateFlow()
 
-    fun loadReservationList() : List<Reservation>{
+    fun loadReservationList(): List<Reservation> {
         return _reservationList.value
     }
 
-    fun getReservationList(restaurantName : String) = viewModelScope.launch {
+    fun getRealtimeChanges(restaurantName: String) = viewModelScope.launch {
+
+        repository.readRealtimeChanges(restaurantName, loadReservationList())
+            .collect { reservationList ->
+                _reservationList.emit(reservationList)
+            }
+
+    }
+
+    fun getReservationList(restaurantName: String) = viewModelScope.launch {
         runCatching {
             repository.readReservation(restaurantName)
         }.onSuccess { reservationList ->
             _reservationList.emit(reservationList)
             Log.i("SUCCESS", "GET RESERVATIONLIST")
             reservationList.forEach { reservation ->
+                // reservation 번호순으로 정렬해야함
                 Log.e("RESERVATIOn", reservation.reservationNumber)
             }
         }.onFailure { error ->
