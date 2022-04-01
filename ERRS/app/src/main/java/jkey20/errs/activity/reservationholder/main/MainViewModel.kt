@@ -146,34 +146,42 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
     }
 
     // TODO: 내 주문 업데이트
-    fun addRealtimeMyOrder(){
+    fun addRealtimeMyOrder() {
 
     }
 
-    fun cancelOrderMenu(restaurantName: String) = viewModelScope.launch {
+    fun cancelOrderMenu(restaurantName: String, order: Order) = viewModelScope.launch {
         runCatching {
-            repository.deleteOrderMenu(restaurantName, getDeviceUUID(), loadReservationOrder())
+            repository.deleteOrderMenu(restaurantName, getDeviceUUID(), order)
         }.onSuccess { isSuccess ->
             Log.i("메뉴주문취소 성공", isSuccess.toString())
+            val reservation = Reservation(
+                reservationNumber = _reservation.value.reservationNumber,
+                time = _reservation.value.time,
+                order = order
+            )
+            _reservation.emit(reservation)
         }.onFailure { error ->
             Log.e("메뉴주문 취소 error", error.message.toString())
         }
     }
 
-    fun loadReservationOrder() : Order{
-        return _reservation.value.order
-    }
 
-    fun editReservationOrder(deleteMenu: Menu){
+    fun editReservationOrder(deleteMenu: Menu): Order {
+        val order = Order(
+            menuList = _reservation.value.order.menuList,
+            request = _reservation.value.order.request
+        )
         _reservation.value.order.menuList.forEach { menu ->
-            Log.i("menu",menu.name)
-            if(menu.equals(deleteMenu)){
-                val list = _reservation.value.order.menuList.toMutableList()
+            Log.i("menu", menu.name)
+            if (menu.equals(deleteMenu)) {
+                val list = order.menuList.toMutableList()
                 list.remove(menu)
-                _reservation.value.order.menuList = list
-                Log.e("SIZE", ""+_reservation.value.order.menuList.size)
+                Log.e("SIZE", "" + _reservation.value.order.menuList.size)
+                order.menuList = list
             }
         }
+        return order
     }
 
     fun perceiveESL(): String {
