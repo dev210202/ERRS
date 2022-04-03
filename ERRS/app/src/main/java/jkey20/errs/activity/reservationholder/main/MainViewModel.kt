@@ -2,17 +2,21 @@ package jkey20.errs.activity.reservationholder.main
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.firestore.DocumentChange
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.QuerySnapshot
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jkey20.errs.base.BaseViewModel
 import jkey20.errs.model.firebase.Menu
 import jkey20.errs.model.firebase.Order
 import jkey20.errs.model.firebase.Reservation
 import jkey20.errs.repository.FirebaseRepository
+import jkey20.errs.repository.toObjectNonNull
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,6 +28,12 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
 
     private val _deviceUUID = MutableStateFlow(String())
     val deviceUUID = _deviceUUID.asStateFlow()
+
+    private val _isReserved = MutableStateFlow(String())
+    val isReserved = _isReserved.asStateFlow()
+
+    private val _reservationList = MutableStateFlow(listOf<Reservation>())
+    val reservationList = _reservationList.asStateFlow()
 
     private val _reservation = MutableStateFlow(Reservation())
     val reservation = _reservation.asStateFlow()
@@ -37,6 +47,11 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
 
     private val _myWaitingNumber = MutableStateFlow("0")
     val myWaitingNumber = _myWaitingNumber.asStateFlow()
+
+
+    fun getIsReserved(): String {
+        return _isReserved.value
+    }
 
     fun setRestaurantName(restaurantName: String) = viewModelScope.launch {
         _restaurantName.emit(restaurantName)
@@ -67,14 +82,71 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
         return _myWaitingNumber.value
     }
 
-    // TODO 4: 예약 추가
+    fun checkMyReservation(restaurantName: String) = viewModelScope.launch {
+        runCatching {
+            repository.readReservationList(restaurantName)
+        }.onSuccess { value ->
+
+            // 내 예약 존재하는지 확인
+            var isExistReservation = false
+            value.documents.forEach { documentSnapshot ->
+                if (documentSnapshot.id.equals(getDeviceUUID())) {
+                    isExistReservation = true
+                }
+            }
+
+            // 전체 리스트 조회
+            val list = mutableListOf<Reservation>()
+            value.documents.forEach { documentSnapshot ->
+                if (documentSnapshot.id.equals(getDeviceUUID())) {
+                    _reservation.emit(documentSnapshot.toObjectNonNull())
+                }
+                list.add(documentSnapshot.toObjectNonNull())
+            }
+            _reservationList.emit(list)
+            _isReserved.emit(isExistReservation.toString())
+        }
+    }
+
+    fun addMyWaitingNumber(restaurantName: String) = viewModelScope.launch {
+        // 대기순번 설정
+        var waitingNumber = 0
+        for (reservation in _reservationList.value) {
+            if (reservation.reservationNumber.toInt() < _reservation.value.reservationNumber.toInt()
+            ) {
+                waitingNumber++
+            }
+        }
+        _myWaitingNumber.emit(waitingNumber.toString())
+    }
+
+    fun createReservation() = viewModelScope.launch {
+        _reservation.emit(
+            Reservation(
+                reservationNumber = createNewReservationNumber(),
+                time = getCurrentTime(),
+                order = Order(
+                    menuList = mutableListOf(
+                        Menu(
+                            name = "삼각김밥",
+                            status = "접수완료"
+                        ), Menu(
+                            name = "사각김밥",
+                            status = "접수미완"
+                        )
+                    )
+                )
+            )
+        )
+    }
+
     fun addReservation(restaurantName: String, reservation: Reservation) = viewModelScope.launch {
         runCatching {
             repository.createReservation(
                 restaurantName,
                 reservation,
-                "999"
-            ) // TODO: random -> UUID로 변경하기
+                getDeviceUUID()
+            )
         }.onSuccess { isSuccess ->
             Log.i("예약추가 성공", isSuccess.toString())
             if (isSuccess) {
@@ -100,55 +172,6 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
         }
     }
 
-    // TODO 2: 예약번호 지정
-    fun setReservationNumber(restaurantName: String) = viewModelScope.launch {
-        runCatching {
-            repository.readReservation(restaurantName)
-        }.onSuccess { reservationList ->
-
-            // TODO 2-1: 최대한 큰 예약번호의 다음번호로 예약번호 지정
-            if (reservationList.size > 0) {
-                var topNumber = "0"
-                reservationList.forEach { reservation ->
-                    if (reservation.reservationNumber.toInt() >= topNumber.toInt()) {
-                        topNumber = reservation.reservationNumber
-                    }
-                }
-                _reservationNumber.emit((topNumber.toInt() + 1).toString())
-            } else {
-                _reservationNumber.emit("1")
-            }
-        }.onFailure { error ->
-            Log.e("error", error.message.toString())
-        }
-    }
-
-
-    // TODO 6: 대기순번 업데이트
-    fun addRealtimeMyWaitingNumber(restaurantName: String) = viewModelScope.launch {
-        repository.readRealtimeMyWaitingNumber(
-            restaurantName,
-            loadReservationNumber(),
-            loadMyWaitingTeamsNumber()
-        ).collect { myWaitingNumber ->
-            Log.e("나의 대기순번: ", myWaitingNumber)
-            _myWaitingNumber.emit(myWaitingNumber)
-
-        }
-    }
-
-    // TODO 5: 대기팀 수  업데이트
-    fun addRealtimeWaitingTeamsUpdate(restaurantName: String) = viewModelScope.launch {
-        repository.readRealtimeWaitingTeamsUpdate(restaurantName).collect { waitingTeamsNumber ->
-            Log.e("대기팀수 업데이트: ", waitingTeamsNumber)
-            _waitingTeamsNumber.emit(waitingTeamsNumber)
-        }
-    }
-
-    // TODO: 내 주문 업데이트
-    fun addRealtimeMyOrder() {
-
-    }
 
     fun cancelOrderMenu(restaurantName: String, order: Order) = viewModelScope.launch {
         runCatching {
@@ -163,6 +186,34 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
             _reservation.emit(reservation)
         }.onFailure { error ->
             Log.e("메뉴주문 취소 error", error.message.toString())
+        }
+    }
+
+
+    /*
+        기능
+        1. 실시간 대기팀 업데이트
+        2. 예약에 변경이 생기면 대기순번 업데이트
+        3. 주문 업데이트
+     */
+    fun addRealtimeUpdate(restaurantName: String) = viewModelScope.launch {
+        repository.readRealtimeUpdate(restaurantName).collect { value ->
+            // 1
+            _waitingTeamsNumber.emit(value.size().toString())
+            // 2
+            for (dc in value!!.documentChanges) {
+                when (dc.type) {
+                    DocumentChange.Type.REMOVED -> {
+                        Log.e("DC REMOVED", dc.document.data.toString())
+                        val removeData: String =
+                            dc.document.data.get("reservationNumber").toString()
+                        // 지워진 데이터의 예약번호가 나보다 앞일떄(작을때)
+                        if (removeData.toInt() < _reservation.value.reservationNumber.toInt()) {
+                            _myWaitingNumber.emit((loadMyWaitingTeamsNumber().toInt() - 1).toString())
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -182,6 +233,31 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
             }
         }
         return order
+    }
+
+
+    fun createNewReservationNumber(): String {
+        if (_reservationList.value.size > 0) {
+            var topNumber = "0"
+            _reservationList.value.forEach{ reservation  ->
+                Log.e("CREATE RN RESERVATION", reservation.reservationNumber)
+                if (reservation.reservationNumber.toInt() >= topNumber.toInt()
+                ) {
+                    topNumber = reservation.reservationNumber
+                }
+            }
+            return (topNumber.toInt() + 1).toString()
+        } else {
+            return "1"
+        }
+    }
+
+
+    private fun getCurrentTime(): String {
+        val now = System.currentTimeMillis()
+        val date = Date(now)
+        val format = SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
+        return format.format(date)
     }
 
     fun perceiveESL(): String {
