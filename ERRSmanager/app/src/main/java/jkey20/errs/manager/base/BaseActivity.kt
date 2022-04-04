@@ -19,7 +19,7 @@ abstract class BaseActivity<B : ViewDataBinding, VM : ViewModel>(@LayoutRes priv
         binding = DataBindingUtil.setContentView(this, layoutId)
         with(binding) {
             lifecycleOwner = this@BaseActivity
-            // setVariable(BR.vm, vm)
+            setVariable(BR.vm, vm)
         }
     }
 }

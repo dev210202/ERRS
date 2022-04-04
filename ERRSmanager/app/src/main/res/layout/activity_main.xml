@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
+        <variable
+            name="vm"
+            type="jkey20.errs.manager.activity.main.MainViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -89,7 +91,7 @@
                         android:fontFamily="@font/sunflower_m"
                         android:gravity="center"
                         android:padding="16dp"
-                        android:text="12"
+                        android:text="@{vm.waitingTeamsNumber.toString()}"
                         android:textColor="@color/white"
                         android:textSize="36dp"
                         app:layout_constraintStart_toEndOf="@+id/materialTextView" />

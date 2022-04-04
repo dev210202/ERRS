@@ -10,10 +10,24 @@ import jkey20.errs.model.firebase.Reservation
 
 class OrderAdapter : ListAdapter<Reservation, OrderAdapter.ViewHolder>(diffUtil) {
 
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val binding =
+            ItemReservationBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ViewHolder(binding)
+    }
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.bind(getItem(position))
+    }
+
+
     class ViewHolder(
-        private val binding : ItemReservationBinding
+        private val binding: ItemReservationBinding
     ) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(reservation: Reservation){
+        fun bind(reservation: Reservation) {
+            binding.rvOrder.adapter = MenuAdapter().apply {
+                submitList(reservation.order.menuList)
+            }
             binding.reservation = reservation
         }
     }
@@ -28,13 +42,5 @@ class OrderAdapter : ListAdapter<Reservation, OrderAdapter.ViewHolder>(diffUtil)
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = ItemReservationBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ViewHolder(binding)
-    }
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(getItem(position))
-    }
 
 }

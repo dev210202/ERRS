@@ -35,7 +35,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
 
             if (reservationList.isNotEmpty()) {
                 (binding.rvReservation.adapter as OrderAdapter).submitList(reservationList)
-                Log.e("reservation", "!!")
+                Log.e("reservationList", reservationList.toString())
             }
         }
 
