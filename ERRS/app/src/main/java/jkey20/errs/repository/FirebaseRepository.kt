@@ -38,23 +38,7 @@ class FirebaseRepository {
                 }
         }
 
-    suspend fun readReservation(restaurantName: String, uuid : String): Boolean =
-        suspendCancellableCoroutine { continuation ->
-            db.collection(restaurantName).get()
-                .addOnSuccessListener { result ->
-                    var isExistReservation = false
-                    result.documents.forEach { documentSnapshot ->
-                        if(documentSnapshot.id.equals(uuid)){
-                           isExistReservation = true
-                        }
-                    }
-                    continuation.resume(isExistReservation)
-                }
-                .addOnFailureListener { exception ->
-                    continuation.resume(true)
-                    throw exception
-                }
-        }
+
 
     suspend fun readReservationList(restaurantName: String): QuerySnapshot=
         suspendCancellableCoroutine { continuation ->

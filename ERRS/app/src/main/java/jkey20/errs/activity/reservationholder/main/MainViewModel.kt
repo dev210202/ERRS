@@ -193,8 +193,8 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
     /*
         기능
         1. 실시간 대기팀 업데이트
-        2. 예약에 변경이 생기면 대기순번 업데이트
-        3. 주문 업데이트
+        2. 예약에 변경이 생기면 대기순번, 주문 업데이트
+
      */
     fun addRealtimeUpdate(restaurantName: String) = viewModelScope.launch {
         repository.readRealtimeUpdate(restaurantName).collect { value ->
@@ -205,12 +205,18 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
                 when (dc.type) {
                     DocumentChange.Type.REMOVED -> {
                         Log.e("DC REMOVED", dc.document.data.toString())
-                        val removeData: String =
-                            dc.document.data.get("reservationNumber").toString()
+                        val removeData: MutableMap<String, Any> = dc.document.data
+
                         // 지워진 데이터의 예약번호가 나보다 앞일떄(작을때)
-                        if (removeData.toInt() < _reservation.value.reservationNumber.toInt()) {
+                        if (removeData.get("reservationNumber").toString().toInt() < _reservation.value.reservationNumber.toInt()) {
                             _myWaitingNumber.emit((loadMyWaitingTeamsNumber().toInt() - 1).toString())
                         }
+                    }
+
+                    // 메뉴변경시
+                    DocumentChange.Type.MODIFIED ->{
+                        Log.e("DC MODIFIED", dc.document.data.toString())
+                        _reservation.emit(dc.document.toObjectNonNull())
                     }
                 }
             }
