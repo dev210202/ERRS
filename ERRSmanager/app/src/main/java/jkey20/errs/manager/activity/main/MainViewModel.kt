@@ -10,7 +10,6 @@ import jkey20.errs.manager.util.toObjectNonNull
 import jkey20.errs.model.firebase.Reservation
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -28,6 +27,13 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
     private val _waitingTeamsNumber = MutableStateFlow("0")
     val waitingTeamsNumber = _waitingTeamsNumber.asStateFlow()
 
+    fun setRestaurantName(restaurantName: String) = viewModelScope.launch {
+        _restaurantName.emit(restaurantName)
+    }
+
+    fun loadRestaurantName(): String {
+        return _restaurantName.value
+    }
 
     fun loadReservationList(): List<Reservation> {
         return _reservationList.value
@@ -43,32 +49,31 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
             _waitingTeamsNumber.emit(value.size().toString())
             Log.e("VALUE SIZE", value.size().toString())
             for (dc in value!!.documentChanges) {
+                var list = _reservationList.value.toMutableList()
                 when (dc.type) {
                     DocumentChange.Type.ADDED -> {
-                        //
                         Log.e("DC ADDED", dc.document.data.toString())
-                        val list = _reservationList.value.toMutableList()
                         list.add(dc.document.toObjectNonNull())
-                        list.sortBy { it.reservationNumber }
-                        _reservationList.emit(list)
                     }
                     DocumentChange.Type.MODIFIED -> {
-                        // 수정
-                        // 리스트에서 수정된 예약을 찾아서 수정
                         Log.e("DC MODIFIED", dc.document.data.toString())
-                        val list = _reservationList.value.toMutableList()
-                        // Todo : 리스트에서 예약 수정 
+                        val modifyReservation = dc.document.toObjectNonNull<Reservation>()
+                        var originReservation = Reservation()
+                        list.forEach { reservation ->
+                            if(reservation.reservationNumber.equals(modifyReservation.reservationNumber)){
+                                originReservation = reservation
+                            }
+                        }
+                        list.remove(originReservation)
+                        list.add(modifyReservation)
                     }
                     DocumentChange.Type.REMOVED -> {
-                        // 삭제 -> 예약 자체가 삭제
-                        // 리스트에서 삭제된 예약을 찾아서 제거
                         Log.e("DC REMOVED", dc.document.data.toString())
-                        val list = _reservationList.value.toMutableList()
                         list.remove(dc.document.toObjectNonNull())
-                        list.sortBy { it.reservationNumber }
-                        _reservationList.emit(list)
                     }
                 }
+                list.sortBy { it.reservationNumber }
+                _reservationList.emit(list)
             }
         }
     }
@@ -93,4 +98,23 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
             Log.e("error", error.message.toString())
         }
     }
+
+    fun cancelReservation(restaurantName: String, reservation: Reservation) = viewModelScope.launch {
+        runCatching {
+            repository.deleteReservation(restaurantName, reservation)
+        }.onSuccess { isSuccess ->
+            Log.i("예약취소 성공", isSuccess.toString())
+            if (isSuccess) {
+
+            }
+
+        }.onFailure { error ->
+            Log.e("예약취소 에러", error.message.toString())
+        }
+    }
+
+    fun removeRealTimeUpdate() {
+        repository.removeRegistrationList()
+    }
+
 }

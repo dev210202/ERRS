@@ -5,9 +5,13 @@
       <map>
         <entry key="..\:/@SourceTree/@ERRS/ERRSmanager/app/src/main/res/drawable-v24/blue_gradient_background.xml" value="0.26979166666666665" />
         <entry key="..\:/@SourceTree/@ERRS/ERRSmanager/app/src/main/res/drawable-v24/customer_numbers_background.xml" value="0.26979166666666665" />
+        <entry key="..\:/@SourceTree/@ERRS/ERRSmanager/app/src/main/res/drawable-v24/grey_light_border_background.xml" value="0.14583333333333334" />
+        <entry key="..\:/@SourceTree/@ERRS/ERRSmanager/app/src/main/res/drawable-v24/order_check_background.xml" value="0.14583333333333334" />
+        <entry key="..\:/@SourceTree/@ERRS/ERRSmanager/app/src/main/res/drawable-v24/order_close_background.xml" value="0.14583333333333334" />
         <entry key="..\:/@SourceTree/@ERRS/ERRSmanager/app/src/main/res/drawable/ic_baseline_close_24.xml" value="0.26979166666666665" />
+        <entry key="..\:/@SourceTree/@ERRS/ERRSmanager/app/src/main/res/drawable/ic_baseline_close_36.xml" value="0.14583333333333334" />
         <entry key="..\:/@SourceTree/@ERRS/ERRSmanager/app/src/main/res/layout/activity_main.xml" value="0.264" />
-        <entry key="..\:/@SourceTree/@ERRS/ERRSmanager/app/src/main/res/layout/item_order.xml" value="0.25364583333333335" />
+        <entry key="..\:/@SourceTree/@ERRS/ERRSmanager/app/src/main/res/layout/item_order.xml" value="0.264" />
         <entry key="..\:/@SourceTree/@ERRS/ERRSmanager/app/src/main/res/layout/item_reservation.xml" value="0.264" />
         <entry key="..\:/@SourceTree/@ERRS/ERRSmanager/app/src/main/res/layout/layout_reservation_item.xml" value="0.264" />
       </map>

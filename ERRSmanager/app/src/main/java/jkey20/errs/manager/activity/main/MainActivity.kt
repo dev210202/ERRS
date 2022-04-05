@@ -19,13 +19,18 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        vm.getReservationList("320")
-        vm.getRealtimeChanges("320")
+        vm.setRestaurantName("320")
+        vm.getReservationList(vm.loadRestaurantName())
+        vm.getRealtimeChanges(vm.loadRestaurantName())
         binding.rvReservation.run {
             setHasFixedSize(true)
             setItemViewCacheSize(10)
 
-            adapter = OrderAdapter().apply {
+            adapter = OrderAdapter(
+                onCloseButtonClicked = { reservation ->
+                    vm.cancelReservation(vm.loadRestaurantName(), reservation)
+                }
+            ).apply {
                 Log.e("APPLY", "!!")
                 submitList(vm.loadReservationList())
             }
@@ -39,6 +44,12 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
             }
         }
 
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        vm.removeRealTimeUpdate()
+        Log.e("REMOVE REALTIME UPDATE", "!!")
     }
 
 }
