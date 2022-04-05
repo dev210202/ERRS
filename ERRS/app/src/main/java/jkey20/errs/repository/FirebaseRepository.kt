@@ -3,6 +3,7 @@ package jkey20.errs.repository
 import android.util.Log
 import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -18,6 +19,7 @@ import kotlin.coroutines.resume
 class FirebaseRepository {
 
     val db = Firebase.firestore
+    val registrationList = mutableListOf<ListenerRegistration>()
 
     @ExperimentalCoroutinesApi
     suspend fun createReservation(
@@ -64,7 +66,7 @@ class FirebaseRepository {
 
 
     suspend fun readRealtimeUpdate(restaurantName: String) = callbackFlow {
-        db.collection(restaurantName).addSnapshotListener { value, error ->
+        var registration = db.collection(restaurantName).addSnapshotListener { value, error ->
             if (value != null) {
                 Log.e("READ REAL TIME UPDATE", "!")
                 trySend(value)
@@ -73,6 +75,7 @@ class FirebaseRepository {
                 throw error
             }
         }
+        registrationList.add(registration)
         awaitClose()
     }
 
@@ -87,4 +90,9 @@ class FirebaseRepository {
                 }
         }
 
+    fun removeRegistrationList(){
+        registrationList.forEach {
+            it.remove()
+        }
+    }
 }

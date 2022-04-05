@@ -61,11 +61,14 @@ class MainActivity : BaseActivity<ActivityReservationholderMainBinding, MainView
         }
 
         vm.reservation.collectWithLifecycle(this) { reservation ->
-            (binding.rvOrdersStaus.adapter as OrdersStatusAdapter).submitList(reservation.order.menuList)
-            if (vm.getIsReserved().equals("false")) {
-                vm.addReservation(vm.loadRestaurantName(), vm.loadReservation())
+            if(!reservation.equals(Reservation())) {
+                (binding.rvOrdersStaus.adapter as OrdersStatusAdapter).submitList(reservation.order.menuList)
+                if (vm.getIsReserved().equals("false")) {
+                    vm.addReservation(vm.loadRestaurantName(), vm.loadReservation())
+                } else {
+                    vm.addMyWaitingNumber()
+                }
             }
-            vm.addMyWaitingNumber(vm.loadRestaurantName()) // 대기순번 설정
         }
 
         binding.btnReservationCancel.setOnClickListener {
@@ -87,5 +90,9 @@ class MainActivity : BaseActivity<ActivityReservationholderMainBinding, MainView
         )
     }
 
-
+    override fun onDestroy() {
+        super.onDestroy()
+        vm.removeRealTimeUpdate()
+        Log.e("REMOVE REALTIME UPDATE", "!!")
+    }
 }
