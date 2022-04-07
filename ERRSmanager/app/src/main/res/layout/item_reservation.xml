@@ -23,6 +23,7 @@
 
 
             <LinearLayout
+                android:id="@+id/layout_reservation"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
@@ -146,11 +147,11 @@
                     android:layout_height="0dp">
 
                     <com.google.android.material.button.MaterialButton
-                        android:id="@+id/materialButton"
-
+                        android:enabled="false"
+                        android:id="@+id/btn_entrance"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@drawable/blue_gradient_background"
+                        android:background="@drawable/button_entrance_background"
                         android:fontFamily="@font/nanumsquare_r"
                         android:text="입장안내"
                         app:backgroundTint="@null"

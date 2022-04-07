@@ -53,7 +53,10 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
                 when (dc.type) {
                     DocumentChange.Type.ADDED -> {
                         Log.e("DC ADDED", dc.document.data.toString())
-                        list.add(dc.document.toObjectNonNull())
+                        val reservation : Reservation = dc.document.toObjectNonNull()
+                        if(!list.contains(reservation)) {
+                            list.add(dc.document.toObjectNonNull())
+                        }
                     }
                     DocumentChange.Type.MODIFIED -> {
                         Log.e("DC MODIFIED", dc.document.data.toString())
@@ -64,8 +67,9 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
                                 originReservation = reservation
                             }
                         }
-                        list.remove(originReservation)
-                        list.add(modifyReservation)
+                        list.set( list.indexOf(originReservation), modifyReservation)
+//                        list.remove(originReservation)
+//                        list.add(modifyReservation)
                     }
                     DocumentChange.Type.REMOVED -> {
                         Log.e("DC REMOVED", dc.document.data.toString())

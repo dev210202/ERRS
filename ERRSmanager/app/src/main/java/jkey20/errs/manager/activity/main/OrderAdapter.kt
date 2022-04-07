@@ -1,5 +1,6 @@
 package jkey20.errs.manager.activity.main
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -11,7 +12,11 @@ import jkey20.errs.model.firebase.Reservation
 class OrderAdapter(private val onCloseButtonClicked: (Reservation) -> Unit) :
     ListAdapter<Reservation, OrderAdapter.ViewHolder>(diffUtil) {
 
+
+    private lateinit var context: Context
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        context = parent.context
         val binding =
             ItemReservationBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding, onCloseButtonClicked)
@@ -19,6 +24,9 @@ class OrderAdapter(private val onCloseButtonClicked: (Reservation) -> Unit) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(getItem(position))
+        if(position == 0){
+            holder.entranceButton.isEnabled = true
+        }
     }
 
 
@@ -26,7 +34,12 @@ class OrderAdapter(private val onCloseButtonClicked: (Reservation) -> Unit) :
         private val binding: ItemReservationBinding,
         private val onCloseButtonClicked : (Reservation) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
+
+        val reservationLayout = binding.layoutReservation
+        val entranceButton = binding.btnEntrance
+
         fun bind(reservation: Reservation) {
+
             binding.rvOrder.adapter = MenuAdapter().apply {
                 submitList(reservation.order.menuList)
             }
@@ -47,6 +60,5 @@ class OrderAdapter(private val onCloseButtonClicked: (Reservation) -> Unit) :
                 oldItem == newItem
         }
     }
-
 
 }

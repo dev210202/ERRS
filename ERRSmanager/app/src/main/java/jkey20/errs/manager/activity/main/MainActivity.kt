@@ -22,10 +22,10 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
         vm.setRestaurantName("320")
         vm.getReservationList(vm.loadRestaurantName())
         vm.getRealtimeChanges(vm.loadRestaurantName())
+
         binding.rvReservation.run {
             setHasFixedSize(true)
             setItemViewCacheSize(10)
-
             adapter = OrderAdapter(
                 onCloseButtonClicked = { reservation ->
                     vm.cancelReservation(vm.loadRestaurantName(), reservation)
@@ -40,7 +40,6 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
 
             if (reservationList.isNotEmpty()) {
                 (binding.rvReservation.adapter as OrderAdapter).submitList(reservationList)
-                Log.e("reservationList", reservationList.toString())
             }
         }
 

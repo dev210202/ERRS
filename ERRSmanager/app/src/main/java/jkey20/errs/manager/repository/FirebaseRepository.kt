@@ -59,6 +59,7 @@ class FirebaseRepository {
 
     suspend fun deleteReservation(restaurantName: String, reservation: Reservation): Boolean =
         suspendCancellableCoroutine { continuation ->
+            // TODO : documentId를 data에서 가져오는 방식으로 교채하기
             var documentId = ""
             db.collection(restaurantName).get()
                 .addOnSuccessListener { result ->

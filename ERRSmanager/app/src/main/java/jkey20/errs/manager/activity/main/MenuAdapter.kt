@@ -40,7 +40,4 @@ class MenuAdapter : ListAdapter<Menu, MenuAdapter.ViewHolder>(diffUtil) {
                 oldItem == newItem
         }
     }
-
-
-
 }
