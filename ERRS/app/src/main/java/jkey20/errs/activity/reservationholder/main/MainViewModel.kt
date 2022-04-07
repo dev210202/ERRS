@@ -130,7 +130,8 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
                             status = "접수미완"
                         )
                     )
-                )
+                ),
+                uuid = getDeviceUUID()
             )
         )
     }
@@ -179,7 +180,8 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
             val reservation = Reservation(
                 reservationNumber = _reservation.value.reservationNumber,
                 time = _reservation.value.time,
-                order = order
+                order = order,
+                uuid = _reservation.value.uuid
             )
             _reservation.emit(reservation)
         }.onFailure { error ->
