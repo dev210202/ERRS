@@ -1,17 +1,18 @@
 package jkey20.errs.manager.activity.main
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.button.MaterialButton
 import jkey20.errs.manager.databinding.ItemReservationBinding
 import jkey20.errs.model.firebase.Reservation
 
 class OrderAdapter(private val onCloseButtonClicked: (Reservation) -> Unit) :
     ListAdapter<Reservation, OrderAdapter.ViewHolder>(diffUtil) {
-
 
     private lateinit var context: Context
 
@@ -23,23 +24,17 @@ class OrderAdapter(private val onCloseButtonClicked: (Reservation) -> Unit) :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(getItem(position))
-        if(position == 0){
-            holder.entranceButton.isEnabled = true
-        }
+        holder.bind(getItem(position), position)
+
     }
 
 
     class ViewHolder(
         private val binding: ItemReservationBinding,
-        private val onCloseButtonClicked : (Reservation) -> Unit
+        private val onCloseButtonClicked: (Reservation) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        val reservationLayout = binding.layoutReservation
-        val entranceButton = binding.btnEntrance
-
-        fun bind(reservation: Reservation) {
-
+        fun bind(reservation: Reservation, position: Int) {
             binding.rvOrder.adapter = MenuAdapter().apply {
                 submitList(reservation.order.menuList)
             }
@@ -47,7 +42,6 @@ class OrderAdapter(private val onCloseButtonClicked: (Reservation) -> Unit) :
                 onCloseButtonClicked(reservation)
             }
             binding.reservation = reservation
-
         }
     }
 
@@ -57,7 +51,7 @@ class OrderAdapter(private val onCloseButtonClicked: (Reservation) -> Unit) :
                 oldItem == newItem
 
             override fun areItemsTheSame(oldItem: Reservation, newItem: Reservation) =
-                oldItem == newItem
+                oldItem.reservationNumber == newItem.reservationNumber
         }
     }
 

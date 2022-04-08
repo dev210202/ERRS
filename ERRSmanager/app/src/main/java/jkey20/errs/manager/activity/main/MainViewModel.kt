@@ -53,8 +53,8 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
                 when (dc.type) {
                     DocumentChange.Type.ADDED -> {
                         Log.e("DC ADDED", dc.document.data.toString())
-                        val reservation : Reservation = dc.document.toObjectNonNull()
-                        if(!list.contains(reservation)) {
+                        val reservation: Reservation = dc.document.toObjectNonNull()
+                        if (!list.contains(reservation)) {
                             list.add(dc.document.toObjectNonNull())
                         }
                     }
@@ -63,11 +63,11 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
                         val modifyReservation = dc.document.toObjectNonNull<Reservation>()
                         var originReservation = Reservation()
                         list.forEach { reservation ->
-                            if(reservation.reservationNumber.equals(modifyReservation.reservationNumber)){
+                            if (reservation.reservationNumber.equals(modifyReservation.reservationNumber)) {
                                 originReservation = reservation
                             }
                         }
-                        list.set( list.indexOf(originReservation), modifyReservation)
+                        list.set(list.indexOf(originReservation), modifyReservation)
 //                        list.remove(originReservation)
 //                        list.add(modifyReservation)
                     }
@@ -87,35 +87,31 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
         runCatching {
             repository.readReservationList(restaurantName)
         }.onSuccess { value ->
-
             val list = mutableListOf<Reservation>()
             value.documents.forEach { documentSnapshot ->
                 list.add(documentSnapshot.toObjectNonNull())
             }
             list.sortBy { it.reservationNumber }
-
-
             _reservationList.emit(list)
-
-
         }.onFailure { error ->
             Log.e("error", error.message.toString())
         }
     }
 
-    fun cancelReservation(restaurantName: String, reservation: Reservation) = viewModelScope.launch {
-        runCatching {
-            repository.deleteReservation(restaurantName, reservation)
-        }.onSuccess { isSuccess ->
-            Log.i("예약취소 성공", isSuccess.toString())
-            if (isSuccess) {
+    fun cancelReservation(restaurantName: String, reservation: Reservation) =
+        viewModelScope.launch {
+            runCatching {
+                repository.deleteReservation(restaurantName, reservation.uuid)
+            }.onSuccess { isSuccess ->
+                Log.i("예약취소 성공", isSuccess.toString())
+                if (isSuccess) {
 
+                }
+
+            }.onFailure { error ->
+                Log.e("예약취소 에러", error.message.toString())
             }
-
-        }.onFailure { error ->
-            Log.e("예약취소 에러", error.message.toString())
         }
-    }
 
     fun removeRealTimeUpdate() {
         repository.removeRegistrationList()

@@ -2,7 +2,11 @@ package jkey20.errs.manager.activity.main
 
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.activity.viewModels
+import androidx.core.view.isVisible
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import jkey20.errs.base.BaseActivity
 import jkey20.errs.manager.R
@@ -31,13 +35,26 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
                     vm.cancelReservation(vm.loadRestaurantName(), reservation)
                 }
             ).apply {
-                Log.e("APPLY", "!!")
                 submitList(vm.loadReservationList())
+                addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                    override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                        super.onScrollStateChanged(recyclerView, newState)
+                        if (newState == 0) {
+                            val lastVisible =
+                                (recyclerView.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()
+                            Log.e("last Visible", ":" + lastVisible)
+                            if(lastVisible != 0){
+                                binding.tvFirstReservation.isVisible = false
+                            }else {
+                                binding.tvFirstReservation.isVisible = true
+                            }
+                        }
+                    }
+                })
             }
         }
 
         vm.reservationList.collectWithLifecycle(this) { reservationList ->
-
             if (reservationList.isNotEmpty()) {
                 (binding.rvReservation.adapter as OrderAdapter).submitList(reservationList)
             }

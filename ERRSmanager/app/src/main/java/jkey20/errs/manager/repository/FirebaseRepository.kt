@@ -44,42 +44,9 @@ class FirebaseRepository {
                 }
         }
 
-
-    suspend fun readReservation(restaurantName: String): List<Reservation> =
+    suspend fun deleteReservation(restaurantName: String, uuid: String): Boolean =
         suspendCancellableCoroutine { continuation ->
-            db.collection(restaurantName).get()
-                .addOnSuccessListener { result ->
-                    continuation.resume(result.documents.map(DocumentSnapshot::toObjectNonNull))
-                }
-                .addOnFailureListener { exception ->
-                    continuation.resume(emptyList())
-                    throw exception
-                }
-        }
-
-    suspend fun deleteReservation(restaurantName: String, reservation: Reservation): Boolean =
-        suspendCancellableCoroutine { continuation ->
-            // TODO : documentId를 data에서 가져오는 방식으로 교채하기
-            var documentId = ""
-            db.collection(restaurantName).get()
-                .addOnSuccessListener { result ->
-                    result.documents.forEach { dc ->
-                        Log.e("dc: ", dc.id)
-                        Log.e("DC RN", dc.get("reservationNumber").toString())
-                        if (dc.get("reservationNumber")!!.toString()
-                                .equals(reservation.reservationNumber)
-                        ) {
-                            documentId = dc.id
-                            Log.e("DC ID", documentId)
-                        }
-                    }
-                }.addOnFailureListener { exception ->
-                    continuation.resume(false)
-                    throw  exception
-                }
-
-            Log.e("DC delete ID", documentId)
-            db.collection(restaurantName).document(documentId).delete()
+            db.collection(restaurantName).document(uuid).delete()
                 .addOnSuccessListener {
                     continuation.resume(true)
                 }.addOnFailureListener { exception ->
