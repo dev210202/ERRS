@@ -14,8 +14,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ERRS">
         <activity
+            android:name=".activity.reservationholder.menudetail.MenuDetailActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.reservationholder.menu.MenuActivity"
-            android:exported="true"/>
+            android:exported="true" />
         <activity
             android:name=".activity.reservationholder.main.MainActivity"
             android:exported="true">
