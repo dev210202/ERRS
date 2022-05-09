@@ -4,5 +4,5 @@ data class Reservation(
     val reservationNumber: String = "",
     val order: Order = Order(),
     val time: String = "",
-    val uuid: String = ""
+    val token: String = ""
 )

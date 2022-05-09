@@ -1,12 +1,11 @@
 package jkey20.errs.activity.reservationholder.menu
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import jkey20.errs.R
-import jkey20.errs.activity.reservationholder.main.OrdersStatusAdapter
+import jkey20.errs.activity.reservationholder.menudetail.MenuDetailActivity
 import jkey20.errs.base.BaseActivity
 import jkey20.errs.databinding.ActivityMenuBinding
 import jkey20.errs.repository.collectWithLifecycle
@@ -28,6 +27,11 @@ class MenuActivity : BaseActivity<ActivityMenuBinding, MenuViewModel>(
             setItemViewCacheSize(10)
             addItemDecoration(MenuItemDecoration(context))
             adapter = MenuAdapter(
+                onMenuClick = { menu ->
+                    val intent =  Intent(this@MenuActivity, MenuDetailActivity::class.java)
+                    intent.putExtra("menu", menu)
+                    startActivity(intent)
+                }
             ).apply {
                 submitList(vm.loadMenuList())
             }

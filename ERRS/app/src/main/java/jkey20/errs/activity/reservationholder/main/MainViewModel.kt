@@ -26,8 +26,8 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
     private val _restaurantName = MutableStateFlow(String())
     val restaurantName = _restaurantName.asStateFlow()
 
-    private val _deviceUUID = MutableStateFlow(String())
-    val deviceUUID = _deviceUUID.asStateFlow()
+    private val _deviceToken = MutableStateFlow(String())
+    val deviceToken = _deviceToken.asStateFlow()
 
     private val _isReserved = MutableStateFlow(String())
     val isReserved = _isReserved.asStateFlow()
@@ -65,13 +65,13 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
         return _reservation.value
     }
 
-    fun setDeviceUUID(uuid: String) = viewModelScope.launch {
-        Log.i("UUID", uuid)
-        _deviceUUID.emit(uuid)
+    fun setToken(token: String) = viewModelScope.launch {
+        Log.i("Token", token)
+        _deviceToken.emit(token)
     }
 
-    fun getDeviceUUID(): String {
-        return _deviceUUID.value
+    fun getDeviceToken(): String {
+        return _deviceToken.value
     }
 
     fun loadReservationNumber(): String {
@@ -90,7 +90,7 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
             // 내 예약 존재하는지 확인
             var isExistReservation = false
             value.documents.forEach { documentSnapshot ->
-                if (documentSnapshot.id.equals(getDeviceUUID())) {
+                if (documentSnapshot.id.equals(getDeviceToken())) {
                     isExistReservation = true
                 }
             }
@@ -98,7 +98,7 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
             // 전체 리스트 조회
             val list = mutableListOf<Reservation>()
             value.documents.forEach { documentSnapshot ->
-                if (documentSnapshot.id.equals(getDeviceUUID())) {
+                if (documentSnapshot.id.equals(getDeviceToken())) {
                     _reservation.emit(documentSnapshot.toObjectNonNull())
                 }
                 list.add(documentSnapshot.toObjectNonNull())
@@ -131,7 +131,7 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
                         )
                     )
                 ),
-                uuid = getDeviceUUID()
+                token = getDeviceToken()
             )
         )
     }
@@ -141,7 +141,7 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
             repository.createReservation(
                 restaurantName,
                 reservation,
-                getDeviceUUID()
+                getDeviceToken()
             )
         }.onSuccess { isSuccess ->
             Log.i("예약추가 성공", isSuccess.toString())
@@ -159,7 +159,7 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
 
     fun cancelReservation(restaurantName: String) = viewModelScope.launch {
         runCatching {
-            repository.deleteReservation(restaurantName, getDeviceUUID())
+            repository.deleteReservation(restaurantName, getDeviceToken())
         }.onSuccess { isSuccess ->
             Log.i("예약취소 성공", isSuccess.toString())
             if (isSuccess) {
@@ -174,14 +174,14 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
 
     fun cancelOrderMenu(restaurantName: String, order: Order) = viewModelScope.launch {
         runCatching {
-            repository.deleteOrderMenu(restaurantName, getDeviceUUID(), order)
+            repository.deleteOrderMenu(restaurantName, getDeviceToken(), order)
         }.onSuccess { isSuccess ->
             Log.i("메뉴주문취소 성공", isSuccess.toString())
             val reservation = Reservation(
                 reservationNumber = _reservation.value.reservationNumber,
                 time = _reservation.value.time,
                 order = order,
-                uuid = _reservation.value.uuid
+                token = _reservation.value.token
             )
             _reservation.emit(reservation)
         }.onFailure { error ->
@@ -220,7 +220,7 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
 
                     // 메뉴변경시
                     DocumentChange.Type.MODIFIED -> {
-                        if (dc.document.id.equals(getDeviceUUID())) {
+                        if (dc.document.id.equals(getDeviceToken())) {
                             Log.e("DC MODIFIED1", dc.document.data.toString())
                             _reservation.emit(dc.document.toObjectNonNull())
                         }

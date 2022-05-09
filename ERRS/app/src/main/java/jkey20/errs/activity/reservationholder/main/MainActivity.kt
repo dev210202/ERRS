@@ -8,6 +8,8 @@ import androidx.activity.viewModels
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
 import jkey20.errs.R
 import jkey20.errs.activity.reservationholder.menu.MenuActivity
@@ -31,7 +33,7 @@ class MainActivity : BaseActivity<ActivityReservationholderMainBinding, MainView
         super.onCreate(savedInstanceState)
 
 
-        vm.setDeviceUUID(getUUID())
+        setToken()
 
         vm.setRestaurantName("320") // TODO: ESL에서 가져온 식당 이름 적용시키기
 
@@ -83,12 +85,19 @@ class MainActivity : BaseActivity<ActivityReservationholderMainBinding, MainView
         }
     }
 
-    private fun getUUID(): String {
-        return android.provider.Settings.Secure.getString(
-            this.contentResolver,
-            Settings.Secure.ANDROID_ID
-        )
+
+    private fun setToken(){
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.e("message task fail", "!")
+                return@OnCompleteListener
+            }
+
+            // Get new FCM registration token
+            vm.setToken(task.result)
+        })
     }
+
 
     override fun onDestroy() {
         super.onDestroy()

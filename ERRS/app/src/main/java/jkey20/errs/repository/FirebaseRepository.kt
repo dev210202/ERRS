@@ -25,11 +25,11 @@ class FirebaseRepository {
     suspend fun createReservation(
         restaurantName: String,
         reservation: Reservation,
-        uuid: String
+        token: String
     ): Boolean =
         suspendCancellableCoroutine { continuation ->
             db.collection(restaurantName). // 식당이름 컬렉션
-            document(uuid). // uuid 문서
+            document(token). // token 문서
             set(reservation) // 예약정보 필드
                 .addOnSuccessListener {
                     continuation.resume(true)
@@ -54,9 +54,9 @@ class FirebaseRepository {
         }
 
 
-    suspend fun deleteReservation(restaurantName: String, uuid: String): Boolean =
+    suspend fun deleteReservation(restaurantName: String, token: String): Boolean =
         suspendCancellableCoroutine { continuation ->
-            db.collection(restaurantName).document(uuid).delete().addOnSuccessListener {
+            db.collection(restaurantName).document(token).delete().addOnSuccessListener {
                 continuation.resume(true)
             }.addOnFailureListener { exception ->
                 continuation.resume(false)
@@ -79,9 +79,9 @@ class FirebaseRepository {
         awaitClose()
     }
 
-    suspend fun deleteOrderMenu(restaurantName: String, uuid: String, order : Order): Boolean =
+    suspend fun deleteOrderMenu(restaurantName: String, token: String, order : Order): Boolean =
         suspendCancellableCoroutine { continuation ->
-            db.collection(restaurantName).document(uuid)
+            db.collection(restaurantName).document(token)
                 .update("order", order).addOnSuccessListener {
                     continuation.resume(true)
                 }.addOnFailureListener { exception ->
