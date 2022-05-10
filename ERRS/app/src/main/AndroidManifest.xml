@@ -28,7 +28,7 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".activity.reservationholder.main.FirebaseMessagingService"
+        <service android:name=".activity.reservationholder.main.MyFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
@@ -41,6 +41,10 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/grey"/>
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="default_channel_id"/>
 
     </application>
 
