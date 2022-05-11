@@ -5,12 +5,18 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.DocumentChange
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jkey20.errs.base.BaseViewModel
+import jkey20.errs.manager.BuildConfig
 import jkey20.errs.manager.repository.FirebaseRepository
 import jkey20.errs.manager.util.toObjectNonNull
 import jkey20.errs.model.firebase.Reservation
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import org.json.JSONObject
+import java.net.HttpURLConnection
+import java.net.URL
+import java.nio.charset.StandardCharsets
 import javax.inject.Inject
 
 @HiltViewModel
@@ -101,7 +107,7 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
     fun cancelReservation(restaurantName: String, reservation: Reservation) =
         viewModelScope.launch {
             runCatching {
-                repository.deleteReservation(restaurantName, reservation.uuid)
+                repository.deleteReservation(restaurantName, reservation.token)
             }.onSuccess { isSuccess ->
                 Log.i("예약취소 성공", isSuccess.toString())
                 if (isSuccess) {
@@ -112,6 +118,16 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
                 Log.e("예약취소 에러", error.message.toString())
             }
         }
+
+    fun notifyEntrance(token: String) = viewModelScope.launch(Dispatchers.IO) {
+        runCatching  {
+            repository.notifyEntrance(token)
+        }.onSuccess { isSuccess ->
+            Log.i("알림 성공", isSuccess.toString())
+        }.onFailure {error ->
+            Log.e("알림 에러", error.message.toString())
+        }
+    }
 
     fun removeRealTimeUpdate() {
         repository.removeRegistrationList()

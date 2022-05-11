@@ -6,6 +6,9 @@ plugins {
     id 'com.google.gms.google-services'
 }
 
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
 android {
     compileSdk 31
 
@@ -17,6 +20,7 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField "String", "FCM_KEY", properties['FCM_KEY']
     }
 
     // databinding
@@ -72,6 +76,8 @@ dependencies {
 
     //firebase
     implementation platform('com.google.firebase:firebase-bom:29.1.0')
+    // fcm
+    implementation 'com.google.firebase:firebase-messaging:23.0.2'
 
     implementation 'com.google.firebase:firebase-storage-ktx'
     implementation 'com.google.firebase:firebase-firestore-ktx'

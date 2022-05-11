@@ -33,6 +33,9 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
             adapter = OrderAdapter(
                 onCloseButtonClicked = { reservation ->
                     vm.cancelReservation(vm.loadRestaurantName(), reservation)
+                },
+                onEntranceButtonClick = { reservation ->
+                    vm.notifyEntrance(reservation.token)
                 }
             ).apply {
                 submitList(vm.loadReservationList())
@@ -43,9 +46,9 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(
                             val lastVisible =
                                 (recyclerView.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()
                             Log.e("last Visible", ":" + lastVisible)
-                            if(lastVisible != 0){
+                            if (lastVisible != 0) {
                                 binding.tvFirstReservation.isVisible = false
-                            }else {
+                            } else {
                                 binding.tvFirstReservation.isVisible = true
                             }
                         }

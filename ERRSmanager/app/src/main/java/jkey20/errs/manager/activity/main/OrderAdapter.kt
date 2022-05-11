@@ -11,7 +11,8 @@ import com.google.android.material.button.MaterialButton
 import jkey20.errs.manager.databinding.ItemReservationBinding
 import jkey20.errs.model.firebase.Reservation
 
-class OrderAdapter(private val onCloseButtonClicked: (Reservation) -> Unit) :
+class OrderAdapter(private val onCloseButtonClicked: (Reservation) -> Unit,
+private val onEntranceButtonClick : (Reservation) -> Unit) :
     ListAdapter<Reservation, OrderAdapter.ViewHolder>(diffUtil) {
 
     private lateinit var context: Context
@@ -20,7 +21,7 @@ class OrderAdapter(private val onCloseButtonClicked: (Reservation) -> Unit) :
         context = parent.context
         val binding =
             ItemReservationBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ViewHolder(binding, onCloseButtonClicked)
+        return ViewHolder(binding, onCloseButtonClicked, onEntranceButtonClick)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -31,7 +32,8 @@ class OrderAdapter(private val onCloseButtonClicked: (Reservation) -> Unit) :
 
     class ViewHolder(
         private val binding: ItemReservationBinding,
-        private val onCloseButtonClicked: (Reservation) -> Unit
+        private val onCloseButtonClicked: (Reservation) -> Unit,
+        private val onEntranceButtonClick: (Reservation) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(reservation: Reservation, position: Int) {
@@ -40,6 +42,9 @@ class OrderAdapter(private val onCloseButtonClicked: (Reservation) -> Unit) :
             }
             binding.btnClose.setOnClickListener {
                 onCloseButtonClicked(reservation)
+            }
+            binding.btnEntrance.setOnClickListener{
+                onEntranceButtonClick(reservation)
             }
             binding.reservation = reservation
         }
