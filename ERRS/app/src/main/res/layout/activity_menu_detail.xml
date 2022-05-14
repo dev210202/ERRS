@@ -42,7 +42,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:fontFamily="@font/nanumsquare_r"
-        android:text="@{menu.price}"
+        android:text="@{Integer.toString(menu.price)}"
         android:textColor="@color/black"
         android:textSize="24dp"
         app:layout_constraintEnd_toEndOf="@+id/tv_menu_name"

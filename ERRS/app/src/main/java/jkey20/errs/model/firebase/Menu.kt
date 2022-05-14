@@ -1,5 +1,6 @@
 package jkey20.errs.model.firebase
 
+import android.net.Uri
 import android.os.Parcelable
 import java.io.Serializable
 
@@ -8,6 +9,6 @@ data class Menu(
     val price: Int = 0,
     val pay: String = "",
     val status: String = "",
-    val option: List<String> = listOf(),
-    val info: String = ""
+    val info: String = "",
+    val uri: String = ""
 ) : Serializable
