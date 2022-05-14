@@ -59,6 +59,7 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
 
     fun loadRestaurantName(): String {
         return _restaurantName.value
+        // get~으로 함수명을 지으면 데이터바인딩에서 에러가 나서 get이 아닌 load로 지정
     }
 
     fun loadReservation(): Reservation {
