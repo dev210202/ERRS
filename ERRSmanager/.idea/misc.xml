@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/@SourceTree/@ERRS/ERRSmanager/app/src/main/res/drawable-v24/blue_gradient_background.xml" value="0.26979166666666665" />
+        <entry key="..\:/@SourceTree/@ERRS/ERRSmanager/app/src/main/res/drawable-v24/customer_numbers_background.xml" value="0.26979166666666665" />
+        <entry key="..\:/@SourceTree/@ERRS/ERRSmanager/app/src/main/res/drawable-v24/grey_light_border_background.xml" value="0.14583333333333334" />
+        <entry key="..\:/@SourceTree/@ERRS/ERRSmanager/app/src/main/res/drawable-v24/order_check_background.xml" value="0.14583333333333334" />
+        <entry key="..\:/@SourceTree/@ERRS/ERRSmanager/app/src/main/res/drawable-v24/order_close_background.xml" value="0.14583333333333334" />
+        <entry key="..\:/@SourceTree/@ERRS/ERRSmanager/app/src/main/res/drawable/button_disenable_background.xml" value="0.26979166666666665" />
+        <entry key="..\:/@SourceTree/@ERRS/ERRSmanager/app/src/main/res/drawable/button_entrance_background.xml" value="0.26979166666666665" />
+        <entry key="..\:/@SourceTree/@ERRS/ERRSmanager/app/src/main/res/drawable/ic_baseline_close_24.xml" value="0.26979166666666665" />
+        <entry key="..\:/@SourceTree/@ERRS/ERRSmanager/app/src/main/res/drawable/ic_baseline_close_36.xml" value="0.14583333333333334" />
+        <entry key="..\:/@SourceTree/@ERRS/ERRSmanager/app/src/main/res/drawable/ic_baseline_keyboard_double_arrow_left_gray_24.xml" value="0.14583333333333334" />
+        <entry key="..\:/@SourceTree/@ERRS/ERRSmanager/app/src/main/res/drawable/ic_baseline_keyboard_double_arrow_left_white_36.xml" value="0.14583333333333334" />
+        <entry key="..\:/@SourceTree/@ERRS/ERRSmanager/app/src/main/res/drawable/ic_launcher_background.xml" value="0.14583333333333334" />
+        <entry key="..\:/@SourceTree/@ERRS/ERRSmanager/app/src/main/res/drawable/order_check_background.xml" value="0.14583333333333334" />
+        <entry key="..\:/@SourceTree/@ERRS/ERRSmanager/app/src/main/res/drawable/order_goend_background.xml" value="0.14583333333333334" />
+        <entry key="..\:/@SourceTree/@ERRS/ERRSmanager/app/src/main/res/drawable/order_gofirst_background.xml" value="0.14583333333333334" />
+        <entry key="..\:/@SourceTree/@ERRS/ERRSmanager/app/src/main/res/layout/activity_main.xml" value="0.264" />
+        <entry key="..\:/@SourceTree/@ERRS/ERRSmanager/app/src/main/res/layout/item_order.xml" value="0.264" />
+        <entry key="..\:/@SourceTree/@ERRS/ERRSmanager/app/src/main/res/layout/item_reservation.xml" value="0.264" />
+        <entry key="..\:/@SourceTree/@ERRS/ERRSmanager/app/src/main/res/layout/layout_reservation_item.xml" value="0.264" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>

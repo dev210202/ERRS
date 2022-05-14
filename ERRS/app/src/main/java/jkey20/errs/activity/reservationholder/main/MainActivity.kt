@@ -8,6 +8,8 @@ import androidx.activity.viewModels
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
 import jkey20.errs.R
 import jkey20.errs.activity.reservationholder.menu.MenuActivity
@@ -30,9 +32,8 @@ class MainActivity : BaseActivity<ActivityReservationholderMainBinding, MainView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // 기기 UUID 불러와서 vm.userUUID에 값 할당
-        vm.setDeviceUUID(getUUID())
-        // esl 인식시 레스토랑 이름가져와서 vm.restaurantName에 값 할당
+
+        setToken()
 
         vm.setRestaurantName("320") // TODO: ESL에서 가져온 식당 이름 적용시키기
 
@@ -43,52 +44,38 @@ class MainActivity : BaseActivity<ActivityReservationholderMainBinding, MainView
             adapter = OrdersStatusAdapter(
                 onMenuOrderButtonClick = { menu ->
                     // TODO : 메뉴주문취소
-                    vm.editReservationOrder(menu)
-                    vm.cancelOrderMenu(vm.loadRestaurantName())
+                    vm.cancelOrderMenu(vm.loadRestaurantName(), vm.editReservationOrder(menu))
                 }
             ).apply {
                 submitList(vm.loadReservation().order.menuList)
             }
         }
 
-        // TODO 1: 예약번호 지정
-        vm.restaurantName.collectWithLifecycle(this) { restaurantName ->
-            if (restaurantName.isNotEmpty()) {
-                vm.setReservationNumber(restaurantName)
+        vm.restaurantName.collectWithLifecycle(this) {
+            vm.checkMyReservation(vm.loadRestaurantName()) // TODO: 1. 예약 확인 -> 내 예약이 있는지 여부, 전체 예약 리스트 가짐
+            vm.addRealtimeUpdate(vm.loadRestaurantName())
+        }
+
+        vm.isReserved.collectWithLifecycle(this) { isReserved -> // TODO: 2.  예약이 있는지 여부에 따라 동작
+            if (isReserved.equals("false")) {
+                vm.createReservation()
             }
         }
 
-        // TODO 3: firebase에 예약 및 실시간 대기팀, 대기순번 불러오기
-        vm.reservationNumber.collectWithLifecycle(this) { reservationNumber ->
-            if (reservationNumber.isNotEmpty()) {
-                vm.addReservation(
-                    vm.loadRestaurantName(),
-                    Reservation(
-                        reservationNumber = reservationNumber,
-                        time = getCurrentTime(),
-                        order = Order(
-                            menuList = mutableListOf(
-                                Menu(
-                                    name = "삼각김밥",
-                                    status = "접수완료"
-                                ), Menu(
-                                    name = "사각김밥",
-                                    status = "접수미완"
-                                )
-                            )
-                        )
-                    )
-                )
-                vm.addRealtimeMyWaitingNumber(vm.loadRestaurantName())
-                vm.addRealtimeWaitingTeamsUpdate(vm.loadRestaurantName())
-            }
-        }
         vm.reservation.collectWithLifecycle(this) { reservation ->
-            (binding.rvOrdersStaus.adapter as OrdersStatusAdapter).submitList(reservation.order.menuList)
+            if(!reservation.equals(Reservation())) {
+                (binding.rvOrdersStaus.adapter as OrdersStatusAdapter).submitList(reservation.order.menuList)
+                if (vm.getIsReserved().equals("false")) {
+                    vm.addReservation(vm.loadRestaurantName(), vm.loadReservation())
+                } else {
+                    vm.addMyWaitingNumber()
+                }
+            }
         }
 
         binding.btnReservationCancel.setOnClickListener {
             vm.cancelReservation(vm.loadRestaurantName())
+            finish()
             // TODO: 예약취소이후 앱 종료
         }
 
@@ -98,18 +85,23 @@ class MainActivity : BaseActivity<ActivityReservationholderMainBinding, MainView
         }
     }
 
-    private fun getUUID(): String {
-        return android.provider.Settings.Secure.getString(
-            this.contentResolver,
-            Settings.Secure.ANDROID_ID
-        )
+
+    private fun setToken(){
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.e("message task fail", "!")
+                return@OnCompleteListener
+            }
+
+            // Get new FCM registration token
+            vm.setToken(task.result)
+        })
     }
 
-    private fun getCurrentTime(): String {
-        val now = System.currentTimeMillis()
-        val date = Date(now)
-        val format = SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
-        return format.format(date)
-    }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        vm.removeRealTimeUpdate()
+        Log.e("REMOVE REALTIME UPDATE", "!!")
+    }
 }
