@@ -35,7 +35,9 @@ class MainActivity : BaseActivity<ActivityReservationholderMainBinding, MainView
 
         setToken()
 
-        vm.setRestaurantName("320") // TODO: ESL에서 가져온 식당 이름 적용시키기
+        val restaurantName = setRestaurantName()
+
+        vm.setRestaurantName(restaurantName)
 
         binding.rvOrdersStaus.run {
             setHasFixedSize(true)
@@ -81,6 +83,7 @@ class MainActivity : BaseActivity<ActivityReservationholderMainBinding, MainView
 
         binding.btnOrder.setOnClickListener {
             val intent = Intent(this, MenuActivity::class.java)
+            intent.putExtra("restaurantName", restaurantName)
             startActivity(intent)
         }
     }
@@ -98,6 +101,10 @@ class MainActivity : BaseActivity<ActivityReservationholderMainBinding, MainView
         })
     }
 
+    private fun setRestaurantName() : String{
+        // RETURN QR INFO
+        return "320"
+    }
 
     override fun onDestroy() {
         super.onDestroy()
