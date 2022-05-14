@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import jkey20.errs.databinding.ItemMenuInfoBinding
 import jkey20.errs.model.firebase.Menu
 
@@ -33,6 +34,8 @@ class MenuAdapter(private val onMenuClick: (Menu) -> Unit) :
                 // 메뉴 자세히 보기
                 onMenuClick(menu)
             }
+            Glide.with(binding.root.context).load(menu.uri).centerCrop().into(binding.ivMenu)
+
         }
     }
 

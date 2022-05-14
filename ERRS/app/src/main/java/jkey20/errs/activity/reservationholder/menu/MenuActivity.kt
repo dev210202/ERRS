@@ -10,6 +10,15 @@ import jkey20.errs.base.BaseActivity
 import jkey20.errs.databinding.ActivityMenuBinding
 import jkey20.errs.repository.collectWithLifecycle
 
+
+
+
+/*
+  1. 식당 이름 가져옴
+  2. 메뉴이미지 리스트 로딩
+  3. 메뉴정보 리스트 로딩
+  4. recyclerview에 데이터 반영
+ */
 @AndroidEntryPoint
 class MenuActivity : BaseActivity<ActivityMenuBinding, MenuViewModel>(
     R.layout.activity_menu
@@ -20,7 +29,9 @@ class MenuActivity : BaseActivity<ActivityMenuBinding, MenuViewModel>(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        vm.addMenuList()
+        vm.setRestaurantName(intent.getStringExtra("restaurantName")!!)
+        vm.addMenuImageList(vm.loadRestaurantName())
+        vm.addMenuList(vm.loadRestaurantName())
 
         binding.rvMenu.run {
             setHasFixedSize(true)
@@ -38,8 +49,12 @@ class MenuActivity : BaseActivity<ActivityMenuBinding, MenuViewModel>(
         }
 
         vm.menuList.collectWithLifecycle(this) { menuList ->
-            (binding.rvMenu.adapter as MenuAdapter).submitList(menuList)
-        }
+            menuList.forEach { menu ->
+                if(menu.uri.isNotEmpty()){
+                    (binding.rvMenu.adapter as MenuAdapter).submitList(menuList)
+                }
+            }
 
+        }
     }
 }
