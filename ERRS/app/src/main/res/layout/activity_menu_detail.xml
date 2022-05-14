@@ -9,20 +9,66 @@
         type="jkey20.errs.model.firebase.Menu" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".activity.reservationholder.menudetail.MenuDetailActivity">
 
-        <com.google.android.material.textview.MaterialTextView
-            android:text="@{menu.name}"
-            android:id="@+id/tv_menu_name"
+        <ImageView
+            android:layout_weight="3"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_height="wrap_content"></ImageView>
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_marginTop="16dp"
+    android:layout_weight="6"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_menu_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:fontFamily="@font/nanumsquare_b"
+        android:text="@{menu.name}"
+        android:textColor="@color/black"
+        android:textSize="36dp"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_menu_price"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/nanumsquare_r"
+        android:text="@{menu.price}"
+        android:textColor="@color/black"
+        android:textSize="24dp"
+        app:layout_constraintEnd_toEndOf="@+id/tv_menu_name"
+        app:layout_constraintStart_toStartOf="@+id/tv_menu_name"
+        app:layout_constraintTop_toBottomOf="@+id/tv_menu_name" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_menu_info"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/nanumsquare_r"
+        android:text="@{menu.info}"
+        android:textColor="@color/black"
+        android:textSize="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/tv_menu_price"
+        app:layout_constraintStart_toStartOf="@+id/tv_menu_price"
+        app:layout_constraintTop_toBottomOf="@+id/tv_menu_price" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+<com.google.android.material.button.MaterialButton
+    android:id="@+id/btn_order"
+    android:text="담기"
+    android:layout_marginHorizontal="16dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"/>
+    </LinearLayout>
 </layout>
