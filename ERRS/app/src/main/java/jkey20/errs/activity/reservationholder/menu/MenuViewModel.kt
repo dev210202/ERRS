@@ -29,6 +29,9 @@ class MenuViewModel @Inject constructor(private val repository: FirebaseReposito
     private val _uriList = MutableStateFlow(listOf<Uri>())
     val uriList = _uriList.asStateFlow()
 
+    private val _cartList = MutableStateFlow(listOf<Menu>())
+    val cartList = _cartList.asStateFlow()
+
     fun loadRestaurantName(): String {
         return _restaurantName.value
     }
@@ -43,6 +46,12 @@ class MenuViewModel @Inject constructor(private val repository: FirebaseReposito
 
     fun loadUriList(): List<Uri> {
         return _uriList.value
+    }
+
+    fun addCartList(menu : Menu) = viewModelScope.launch {
+        val list = _cartList.value.toMutableList()
+        list.add(menu)
+        _cartList.emit(list)
     }
 
     fun addMenuList(restaurantName: String) = viewModelScope.launch {

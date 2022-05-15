@@ -54,5 +54,9 @@ class MenuActivity : BaseActivity<ActivityMenuBinding, MenuViewModel>(
                 )
             )
         }
+
+        vm.cartList.collectWithLifecycle(this){ cartList ->
+            binding.tvCartCount.text = cartList.size.toString()
+        }
     }
 }
