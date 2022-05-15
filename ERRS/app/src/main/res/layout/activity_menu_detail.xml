@@ -16,59 +16,79 @@
         tools:context=".activity.reservationholder.menudetail.MenuDetailActivity">
 
         <ImageView
+            android:scaleType="centerCrop"
+            android:id="@+id/iv_menu"
             android:layout_weight="3"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"></ImageView>
+            android:layout_height="0dp"></ImageView>
 <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_marginTop="16dp"
-    android:layout_weight="6"
+    android:layout_weight="8"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="0dp">
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_menu_name"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:fontFamily="@font/nanumsquare_b"
         android:text="@{menu.name}"
         android:textColor="@color/black"
         android:textSize="36dp"
+        app:layout_constraintEnd_toStartOf="@+id/tv_menu_price"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/tv_menu_price"
+    <LinearLayout
+        android:id="@+id/linearLayout2"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="1dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:background="@color/grey"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/tv_menu_name"
+        app:layout_constraintTop_toBottomOf="@+id/tv_menu_name" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:gravity="right"
+        android:id="@+id/tv_menu_price"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
         android:fontFamily="@font/nanumsquare_r"
         android:text="@{Integer.toString(menu.price)}"
         android:textColor="@color/black"
         android:textSize="24dp"
-        app:layout_constraintEnd_toEndOf="@+id/tv_menu_name"
-        app:layout_constraintStart_toStartOf="@+id/tv_menu_name"
-        app:layout_constraintTop_toBottomOf="@+id/tv_menu_name" />
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_menu_info"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
         android:fontFamily="@font/nanumsquare_r"
         android:text="@{menu.info}"
         android:textColor="@color/black"
         android:textSize="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/tv_menu_price"
-        app:layout_constraintStart_toStartOf="@+id/tv_menu_price"
-        app:layout_constraintTop_toBottomOf="@+id/tv_menu_price" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 <com.google.android.material.button.MaterialButton
+    android:layout_weight="1"
     android:id="@+id/btn_order"
     android:text="담기"
     android:layout_marginHorizontal="16dp"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"/>
+    android:layout_height="0dp"/>
     </LinearLayout>
 </layout>
