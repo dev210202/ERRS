@@ -26,6 +26,9 @@ class MenuViewModel @Inject constructor(private val repository: FirebaseReposito
     private val _menuList = MutableStateFlow(listOf<Menu>())
     val menuList = _menuList.asStateFlow()
 
+    private val _uriList = MutableStateFlow(listOf<Uri>())
+    val uriList = _uriList.asStateFlow()
+
     fun loadRestaurantName(): String {
         return _restaurantName.value
     }
@@ -36,6 +39,10 @@ class MenuViewModel @Inject constructor(private val repository: FirebaseReposito
 
     fun loadMenuList(): List<Menu> {
         return _menuList.value
+    }
+
+    fun loadUriList(): List<Uri> {
+        return _uriList.value
     }
 
     fun addMenuList(restaurantName: String) = viewModelScope.launch {
@@ -58,17 +65,28 @@ class MenuViewModel @Inject constructor(private val repository: FirebaseReposito
         runCatching {
             repository.readMenuImages(restaurantName)
         }.onSuccess { uriList ->
-            uriList.forEach { uri ->
-                _menuList.update { list ->
-                    list.map { menu ->
-                        menu.copy(uri = uri.toString())
-                    }
-                }
-            }
+            uriList.forEach { uri -> Log.e("URI CHECK", uri.toString()) }
+            _uriList.emit(uriList)
         }.onFailure { error ->
             // error
             Log.e("onFAILURE", error.message.toString())
         }
 
     }
+
+    fun getMenuList(uriList: List<Uri>, menuList: List<Menu>): List<Menu> {
+        val list = mutableListOf<Menu>()
+        for (i in uriList.indices) {
+            uriList.forEach { uri ->
+                if (hasMenuCorrectUri(uri, i)) {
+                    list.add(menuList[i].copy(uri = uri.toString()))
+                }
+            }
+        }
+        return list
+    }
+
+    private fun hasMenuCorrectUri(uri: Uri, i: Int) =
+        uri.toString().contains("menu${i + 1}")
+
 }

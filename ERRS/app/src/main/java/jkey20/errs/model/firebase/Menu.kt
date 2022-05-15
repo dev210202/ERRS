@@ -1,7 +1,5 @@
 package jkey20.errs.model.firebase
 
-import android.net.Uri
-import android.os.Parcelable
 import java.io.Serializable
 
 data class Menu(

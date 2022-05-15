@@ -11,8 +11,6 @@ import jkey20.errs.databinding.ActivityMenuBinding
 import jkey20.errs.repository.collectWithLifecycle
 
 
-
-
 /*
   1. 식당 이름 가져옴
   2. 메뉴이미지 리스트 로딩
@@ -39,7 +37,7 @@ class MenuActivity : BaseActivity<ActivityMenuBinding, MenuViewModel>(
             addItemDecoration(MenuItemDecoration(context))
             adapter = MenuAdapter(
                 onMenuClick = { menu ->
-                    val intent =  Intent(this@MenuActivity, MenuDetailActivity::class.java)
+                    val intent = Intent(this@MenuActivity, MenuDetailActivity::class.java)
                     intent.putExtra("menu", menu)
                     startActivity(intent)
                 }
@@ -48,13 +46,13 @@ class MenuActivity : BaseActivity<ActivityMenuBinding, MenuViewModel>(
             }
         }
 
-        vm.menuList.collectWithLifecycle(this) { menuList ->
-            menuList.forEach { menu ->
-                if(menu.uri.isNotEmpty()){
-                    (binding.rvMenu.adapter as MenuAdapter).submitList(menuList)
-                }
-            }
-
+        vm.uriList.collectWithLifecycle(this) { menuList ->
+            (binding.rvMenu.adapter as MenuAdapter).submitList(
+                vm.getMenuList(
+                    vm.loadUriList(),
+                    vm.loadMenuList()
+                )
+            )
         }
     }
 }
