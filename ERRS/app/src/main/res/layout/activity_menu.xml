@@ -4,6 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <variable
+            name="vm"
+            type="jkey20.errs.activity.reservationholder.menu.MenuViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -59,7 +62,7 @@
                 android:fontFamily="@font/nanumsquare_r"
                 android:paddingHorizontal="8dp"
                 android:paddingVertical="2dp"
-                android:text="0"
+                android:text="@{Integer.toString(vm.cartList.size())}"
                 android:textColor="@color/blue"
                 android:textSize="24dp"
                 app:layout_constraintBottom_toBottomOf="parent"

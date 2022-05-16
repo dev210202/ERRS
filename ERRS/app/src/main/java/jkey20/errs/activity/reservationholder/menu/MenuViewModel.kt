@@ -2,6 +2,7 @@ package jkey20.errs.activity.reservationholder.menu
 
 import android.net.Uri
 import android.util.Log
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jkey20.errs.base.BaseViewModel
@@ -9,10 +10,7 @@ import jkey20.errs.model.firebase.Menu
 import jkey20.errs.model.firebase.Order
 import jkey20.errs.repository.FirebaseRepository
 import jkey20.errs.repository.toObjectNonNull
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -48,9 +46,9 @@ class MenuViewModel @Inject constructor(private val repository: FirebaseReposito
         return _uriList.value
     }
 
-    fun addCartList(menu : Menu) = viewModelScope.launch {
+    fun addCartList(cartList: List<Menu>) = viewModelScope.launch {
         val list = _cartList.value.toMutableList()
-        list.add(menu)
+        list += cartList
         _cartList.emit(list)
     }
 
