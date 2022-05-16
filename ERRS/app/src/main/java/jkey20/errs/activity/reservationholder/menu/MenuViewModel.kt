@@ -50,6 +50,13 @@ class MenuViewModel @Inject constructor(private val repository: FirebaseReposito
         val list = _cartList.value.toMutableList()
         list += cartList
         _cartList.emit(list)
+        _cartList.value.forEach { menu ->
+            Log.e("CART LIST menu", menu.toString() )
+        }
+    }
+
+    fun loadCartList() : List<Menu> {
+        return _cartList.value
     }
 
     fun addMenuList(restaurantName: String) = viewModelScope.launch {
