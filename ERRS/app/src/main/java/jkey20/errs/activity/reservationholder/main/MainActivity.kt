@@ -13,6 +13,7 @@ import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
 import jkey20.errs.R
 import jkey20.errs.activity.reservationholder.menu.MenuActivity
+import jkey20.errs.activity.reservationholder.util.Util
 import jkey20.errs.base.BaseActivity
 import jkey20.errs.databinding.ActivityReservationholderMainBinding
 import jkey20.errs.model.firebase.Menu
@@ -33,7 +34,9 @@ class MainActivity : BaseActivity<ActivityReservationholderMainBinding, MainView
         super.onCreate(savedInstanceState)
 
 
-        setToken()
+       // setToken()
+
+        vm.setToken(Util.getToken())
 
         val restaurantName = setRestaurantName()
 
@@ -86,19 +89,6 @@ class MainActivity : BaseActivity<ActivityReservationholderMainBinding, MainView
             intent.putExtra("restaurantName", restaurantName)
             startActivity(intent)
         }
-    }
-
-
-    private fun setToken(){
-        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
-            if (!task.isSuccessful) {
-                Log.e("message task fail", "!")
-                return@OnCompleteListener
-            }
-
-            // Get new FCM registration token
-            vm.setToken(task.result)
-        })
     }
 
     private fun setRestaurantName() : String{
