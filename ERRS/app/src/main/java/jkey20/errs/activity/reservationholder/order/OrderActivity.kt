@@ -11,6 +11,7 @@ import jkey20.errs.activity.reservationholder.menu.MenuViewModel
 import jkey20.errs.base.BaseActivity
 import jkey20.errs.databinding.ActivityOrderBinding
 import jkey20.errs.model.cart.Cart
+import jkey20.errs.model.cart.CartMenu
 import jkey20.errs.model.firebase.Menu
 import jkey20.errs.repository.collectWithLifecycle
 
@@ -31,21 +32,31 @@ class OrderActivity : BaseActivity<ActivityOrderBinding, MenuViewModel>(
             setHasFixedSize(true)
             setItemViewCacheSize(10)
             addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
-            adapter = OrderAdapter(
+            adapter = OrderAdapter()
+        }
 
-            ).apply {
-                submitList(cartList.list)
-                notifyDataSetChanged()
+        vm.cartList.collectWithLifecycle(this) { list ->
+            val menuList = mutableListOf<Menu>() // -> 메뉴이름들 저장소
+            val cartMenuList = mutableListOf<CartMenu>()
+            // 현재 메뉴가 메뉴리스트에 존재한다면
+            // 카트메뉴리스트에서 해당 카트메뉴의 카운트를 수정한다.
+            //
+            list.forEach { menu ->
+                if (menuList.contains(menu)) {
+                    var newCartMenu = cartMenuList.find { cartMenu -> cartMenu.menu == menu }!!
+                    cartMenuList.remove(newCartMenu)
+                    cartMenuList.add(newCartMenu.copy(count = newCartMenu.count + 1))
+                } else {
+                    menuList.add(menu)
+                    cartMenuList.add(CartMenu(menu, 1))
+                }
             }
-        }
-        (binding.rvOrder.adapter as OrderAdapter).submitList(cartList.list)
-        vm.cartList.collectWithLifecycle(this){ list ->
-            (binding.rvOrder.adapter as OrderAdapter).submitList(list)
+            cartMenuList.forEach { cartMenu ->
+                Log.e("CART MENU!!!", cartMenu.toString())
+            }
+            (binding.rvOrder.adapter as OrderAdapter).submitList(cartMenuList)
         }
     }
 
-    private fun sortCartList(list : List<Menu>) {
-
-    }
 
 }
