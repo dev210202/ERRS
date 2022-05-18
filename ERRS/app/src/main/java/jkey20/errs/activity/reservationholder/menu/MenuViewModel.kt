@@ -5,9 +5,13 @@ import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import jkey20.errs.activity.reservationholder.util.Util
 import jkey20.errs.base.BaseViewModel
+import jkey20.errs.model.cart.CartMenu
 import jkey20.errs.model.firebase.Menu
+import jkey20.errs.model.firebase.MenuList
 import jkey20.errs.model.firebase.Order
+import jkey20.errs.model.firebase.Reservation
 import jkey20.errs.repository.FirebaseRepository
 import jkey20.errs.repository.toObjectNonNull
 import kotlinx.coroutines.flow.*
@@ -30,6 +34,9 @@ class MenuViewModel @Inject constructor(private val repository: FirebaseReposito
     private val _cartList = MutableStateFlow(listOf<Menu>())
     val cartList = _cartList.asStateFlow()
 
+    private val _reservation = MutableStateFlow(Reservation())
+    val reservation = _reservation.asStateFlow()
+
     fun loadRestaurantName(): String {
         return _restaurantName.value
     }
@@ -44,6 +51,10 @@ class MenuViewModel @Inject constructor(private val repository: FirebaseReposito
 
     fun loadUriList(): List<Uri> {
         return _uriList.value
+    }
+
+    fun loadReservation(): Reservation {
+        return _reservation.value
     }
 
     fun addCartList(cartList: List<Menu>) = viewModelScope.launch {
@@ -63,9 +74,10 @@ class MenuViewModel @Inject constructor(private val repository: FirebaseReposito
         runCatching {
             repository.readMenuInfos(restaurantName)
         }.onSuccess { value ->
-            val order: Order = value.toObjectNonNull()
+            val menuList: MenuList = value.toObjectNonNull()
             val list = mutableListOf<Menu>()
-            order.menuList.forEach { menu ->
+            menuList.menuList.forEach { menu ->
+                Log.e("addMenuList menu", menu.toString())
                 list.add(menu)
             }
             _menuList.emit(list)
@@ -98,6 +110,34 @@ class MenuViewModel @Inject constructor(private val repository: FirebaseReposito
             }
         }
         return list
+    }
+
+    fun addOrder(restaurantName: String, order :Order) = viewModelScope.launch {
+        runCatching {
+            repository.updateOrderMenu(restaurantName, Util.getToken(), order)
+        }.onSuccess {isSuccess ->
+            Log.i("메뉴주문성공", isSuccess.toString())
+        }. onFailure { exception ->
+            Log.i("메뉴주문실패", exception.message.toString())
+        }
+    }
+
+    fun checkMyReservation(restaurantName: String) = viewModelScope.launch {
+        runCatching {
+            repository.readReservationList(restaurantName)
+        }.onSuccess { value ->
+
+
+            // 전체 리스트 조회
+
+            value.documents.forEach { documentSnapshot ->
+                if (documentSnapshot.id.equals(Util.getToken())) {
+                    _reservation.emit(documentSnapshot.toObjectNonNull())
+                }
+
+            }
+
+        }
     }
 
     private fun hasMenuCorrectUri(uri: Uri, i: Int) =

@@ -22,7 +22,7 @@
             android:background="@drawable/customer_numbers_background">
 
             <EditText
-                android:id="@+id/et_edittext"
+                android:id="@+id/et_request"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="2"

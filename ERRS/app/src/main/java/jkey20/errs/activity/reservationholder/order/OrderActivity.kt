@@ -13,6 +13,8 @@ import jkey20.errs.databinding.ActivityOrderBinding
 import jkey20.errs.model.cart.Cart
 import jkey20.errs.model.cart.CartMenu
 import jkey20.errs.model.firebase.Menu
+import jkey20.errs.model.firebase.Order
+import jkey20.errs.model.firebase.Reservation
 import jkey20.errs.repository.collectWithLifecycle
 
 @AndroidEntryPoint
@@ -25,7 +27,14 @@ class OrderActivity : BaseActivity<ActivityOrderBinding, MenuViewModel>(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+
+        // TODO: 모든 액티비티에서 레스토랑 이름 가져오는 메소드 만들어서 받아올것
+        vm.setRestaurantName("320")
+
+        vm.checkMyReservation(vm.loadRestaurantName())
+
         val cartList = intent.getSerializableExtra("cartList") as Cart
+        val reservation = vm.loadReservation()
         vm.addCartList(cartList.list)
 
         binding.rvOrder.run {
@@ -35,6 +44,22 @@ class OrderActivity : BaseActivity<ActivityOrderBinding, MenuViewModel>(
             adapter = OrderAdapter()
         }
 
+        binding.btnOrder.setOnClickListener {
+           val cartList =  (binding.rvOrder.adapter as OrderAdapter).currentList
+            reservation.order.menuList.forEach { reservationMenu ->
+                if(cartList.contains(reservationMenu)){
+                   val newCartMenu =  cartList[cartList.indexOf(reservationMenu)].copy(count = cartList[cartList.indexOf(reservationMenu)].count + 1)
+                   cartList.set(cartList.indexOf(reservationMenu), newCartMenu)
+                }
+            }
+            cartList.forEach { cartMenu ->
+                Log.e("ORDER BUtton", cartMenu.toString())
+            }
+
+
+            vm.addOrder(vm.loadRestaurantName(), Order(menuList = cartList, request = binding.etRequest.text.toString()))
+        }
+        
         vm.cartList.collectWithLifecycle(this) { list ->
             val menuList = mutableListOf<Menu>() // -> 메뉴이름들 저장소
             val cartMenuList = mutableListOf<CartMenu>()
@@ -57,6 +82,7 @@ class OrderActivity : BaseActivity<ActivityOrderBinding, MenuViewModel>(
             (binding.rvOrder.adapter as OrderAdapter).submitList(cartMenuList)
         }
     }
+
 
 
 }

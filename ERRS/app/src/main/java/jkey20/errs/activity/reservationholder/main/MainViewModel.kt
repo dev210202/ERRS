@@ -7,6 +7,7 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.QuerySnapshot
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jkey20.errs.base.BaseViewModel
+import jkey20.errs.model.cart.CartMenu
 import jkey20.errs.model.firebase.Menu
 import jkey20.errs.model.firebase.Order
 import jkey20.errs.model.firebase.Reservation
@@ -123,12 +124,17 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
                 time = getCurrentTime(),
                 order = Order(
                     menuList = mutableListOf(
-                        Menu(
-                            name = "삼각김밥",
-                            status = "접수완료"
-                        ), Menu(
-                            name = "사각김밥",
-                            status = "접수미완"
+                        CartMenu(
+                            Menu(
+                                name = "삼각김밥",
+                                status = "접수완료"
+                            )
+                        ),
+                        CartMenu(
+                            Menu(
+                                name = "사각김밥",
+                                status = "접수미완"
+                            )
                         )
                     )
                 ),
@@ -175,7 +181,7 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
 
     fun cancelOrderMenu(restaurantName: String, order: Order) = viewModelScope.launch {
         runCatching {
-            repository.deleteOrderMenu(restaurantName, getDeviceToken(), order)
+            repository.updateOrderMenu(restaurantName, getDeviceToken(), order)
         }.onSuccess { isSuccess ->
             Log.i("메뉴주문취소 성공", isSuccess.toString())
             val reservation = Reservation(
@@ -244,16 +250,14 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
         repository.removeRegistrationList()
     }
 
-    fun editReservationOrder(deleteMenu: Menu): Order {
-        val order = Order(
-            menuList = _reservation.value.order.menuList,
-            request = _reservation.value.order.request
-        )
-        _reservation.value.order.menuList.forEach { menu ->
-            Log.i("menu", menu.name)
-            if (menu.equals(deleteMenu)) {
+    fun editReservationOrder(deleteMenu: CartMenu): Order {
+        val order = _reservation.value.order.copy()
+
+        _reservation.value.order.menuList.forEach { cartMenu ->
+            Log.i("menu", cartMenu.menu.name)
+            if (cartMenu.equals(deleteMenu)) {
                 val list = order.menuList.toMutableList()
-                list.remove(menu)
+                list.remove(cartMenu)
                 Log.e("SIZE", "" + _reservation.value.order.menuList.size)
                 order.menuList = list
             }

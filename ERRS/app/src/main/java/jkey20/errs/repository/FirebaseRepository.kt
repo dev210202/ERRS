@@ -83,7 +83,8 @@ class FirebaseRepository {
         awaitClose()
     }
 
-    suspend fun deleteOrderMenu(restaurantName: String, token: String, order: Order): Boolean =
+
+    suspend fun updateOrderMenu(restaurantName: String, token: String, order: Order): Boolean =
         suspendCancellableCoroutine { continuation ->
             db.collection(restaurantName).document(token)
                 .update("order", order).addOnSuccessListener {

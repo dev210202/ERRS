@@ -7,11 +7,12 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import jkey20.errs.databinding.ItemMenuOrderBinding
+import jkey20.errs.model.cart.CartMenu
 import jkey20.errs.model.firebase.Menu
 
 class OrdersStatusAdapter(
-    private val onMenuOrderButtonClick : (Menu) -> Unit
-) : ListAdapter<Menu, OrdersStatusAdapter.ViewHolder>(diffUtil) {
+    private val onMenuOrderButtonClick : (CartMenu) -> Unit
+) : ListAdapter<CartMenu, OrdersStatusAdapter.ViewHolder>(diffUtil) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding =
@@ -26,22 +27,22 @@ class OrdersStatusAdapter(
 
     class ViewHolder(
         private val binding: ItemMenuOrderBinding,
-        private val onMenuOrderButtonClick : (Menu) -> Unit
+        private val onMenuOrderButtonClick : (CartMenu) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(menu: Menu) {
-            binding.menu = menu
+        fun bind(cartMenu: CartMenu) {
+            binding.cartMenu = cartMenu
             binding.btnMenuStatus.setOnClickListener {
-                onMenuOrderButtonClick(menu)
+                onMenuOrderButtonClick(cartMenu)
             }
         }
     }
 
     private companion object {
-        val diffUtil = object : DiffUtil.ItemCallback<Menu>() {
-            override fun areContentsTheSame(oldItem: Menu, newItem: Menu) =
+        val diffUtil = object : DiffUtil.ItemCallback<CartMenu>() {
+            override fun areContentsTheSame(oldItem: CartMenu, newItem: CartMenu) =
                 oldItem == newItem
 
-            override fun areItemsTheSame(oldItem: Menu, newItem: Menu) =
+            override fun areItemsTheSame(oldItem: CartMenu, newItem: CartMenu) =
                 oldItem == newItem
         }
     }

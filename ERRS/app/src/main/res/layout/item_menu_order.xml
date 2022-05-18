@@ -6,8 +6,8 @@
     <data>
 
         <variable
-            name="menu"
-            type="jkey20.errs.model.firebase.Menu" />
+            name="cartMenu"
+            type="jkey20.errs.model.cart.CartMenu" />
     </data>
 
     <LinearLayout
@@ -29,7 +29,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
                 android:fontFamily="@font/nanumsquare_eb"
-                android:text="@{menu.name}"
+                android:text="@{cartMenu.menu.name}"
                 android:textColor="@color/black"
                 android:textSize="24dp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -52,7 +52,7 @@
                 android:layout_marginBottom="16dp"
                 android:fontFamily="@font/nanumsquare_r"
                 android:gravity="center"
-                android:text="@{menu.status}"
+                android:text="@{cartMenu.menu.status}"
                 android:textColor="@color/white"
                 android:textSize="16dp"
                 app:layout_constraintBottom_toBottomOf="parent"

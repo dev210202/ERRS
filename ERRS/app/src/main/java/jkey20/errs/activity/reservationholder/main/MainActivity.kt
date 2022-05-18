@@ -47,9 +47,9 @@ class MainActivity : BaseActivity<ActivityReservationholderMainBinding, MainView
             setItemViewCacheSize(10)
             addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
             adapter = OrdersStatusAdapter(
-                onMenuOrderButtonClick = { menu ->
+                onMenuOrderButtonClick = { cartMenu ->
                     // TODO : 메뉴주문취소
-                    vm.cancelOrderMenu(vm.loadRestaurantName(), vm.editReservationOrder(menu))
+                    vm.cancelOrderMenu(vm.loadRestaurantName(), vm.editReservationOrder(cartMenu))
                 }
             ).apply {
                 submitList(vm.loadReservation().order.menuList)

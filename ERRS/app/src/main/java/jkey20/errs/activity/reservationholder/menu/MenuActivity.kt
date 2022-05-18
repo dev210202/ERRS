@@ -13,6 +13,7 @@ import jkey20.errs.activity.reservationholder.order.OrderActivity
 import jkey20.errs.base.BaseActivity
 import jkey20.errs.databinding.ActivityMenuBinding
 import jkey20.errs.model.cart.Cart
+import jkey20.errs.model.firebase.Reservation
 import jkey20.errs.repository.collectWithLifecycle
 
 
