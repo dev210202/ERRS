@@ -38,9 +38,9 @@ class MainActivity : BaseActivity<ActivityReservationholderMainBinding, MainView
 
         vm.setToken(Util.getToken())
 
-        val restaurantName = setRestaurantName()
-
-        vm.setRestaurantName(restaurantName)
+//        val restaurantName = setRestaurantName()
+//
+//        vm.setRestaurantName(restaurantName)
 
         binding.rvOrdersStaus.run {
             setHasFixedSize(true)
@@ -56,15 +56,25 @@ class MainActivity : BaseActivity<ActivityReservationholderMainBinding, MainView
             }
         }
 
+        vm.deviceToken.collectWithLifecycle(this){
+            val restaurantName = setRestaurantName()
+            vm.setRestaurantName(restaurantName)
+
+            Log.e("deviceToken CWC","!!")
+        }
+
         vm.restaurantName.collectWithLifecycle(this) {
             vm.checkMyReservation(vm.loadRestaurantName()) // TODO: 1. 예약 확인 -> 내 예약이 있는지 여부, 전체 예약 리스트 가짐
             vm.addRealtimeUpdate(vm.loadRestaurantName())
+            Log.e("restaurantName CWC","!!")
         }
 
         vm.isReserved.collectWithLifecycle(this) { isReserved -> // TODO: 2.  예약이 있는지 여부에 따라 동작
             if (isReserved.equals("false")) {
                 vm.createReservation()
             }
+
+            Log.e("isReserved CWC","!!")
         }
 
         vm.reservation.collectWithLifecycle(this) { reservation ->
@@ -76,6 +86,7 @@ class MainActivity : BaseActivity<ActivityReservationholderMainBinding, MainView
                     vm.addMyWaitingNumber()
                 }
             }
+            Log.e("reservation CWC","!!")
         }
 
         binding.btnReservationCancel.setOnClickListener {
@@ -86,6 +97,7 @@ class MainActivity : BaseActivity<ActivityReservationholderMainBinding, MainView
 
         binding.btnOrder.setOnClickListener {
             val intent = Intent(this, MenuActivity::class.java)
+            val restaurantName = vm.loadRestaurantName()
             intent.putExtra("restaurantName", restaurantName)
             startActivity(intent)
         }

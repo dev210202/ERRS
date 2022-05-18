@@ -86,6 +86,9 @@ class FirebaseRepository {
 
     suspend fun updateOrderMenu(restaurantName: String, token: String, order: Order): Boolean =
         suspendCancellableCoroutine { continuation ->
+
+            Log.e("updateOrderMenu" ,  restaurantName + ", " + order.toString())
+
             db.collection(restaurantName).document(token)
                 .update("order", order).addOnSuccessListener {
                     continuation.resume(true)

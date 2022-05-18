@@ -5,21 +5,26 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 
 object Util{
-    fun getToken() : String{
-        var token = ""
-        var task = FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
-            if (!task.isSuccessful) {
-                Log.e("message task fail", "!")
-                return@OnCompleteListener
-            }
 
-            // Get new FCM registration token
-            token = task.result
-        })
-        if(task.isSuccessful){
-            token = task.result
+    var deviceToken =""
+
+    fun getToken() : String{
+        if(deviceToken == "") {
+            var task =
+                FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+                    if (!task.isSuccessful) {
+                        Log.e("message task fail", "!")
+                        return@OnCompleteListener
+                    }
+
+                    // Get new FCM registration token
+                    deviceToken = task.result
+                })
+            if (task.isSuccessful) {
+                deviceToken = task.result
+            }
+            Log.e("token: ", deviceToken.toString())
         }
-        Log.e("token: ", token.toString())
-        return token
+        return deviceToken
     }
 }

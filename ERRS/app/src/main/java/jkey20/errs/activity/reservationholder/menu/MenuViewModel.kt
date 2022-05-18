@@ -37,6 +37,9 @@ class MenuViewModel @Inject constructor(private val repository: FirebaseReposito
     private val _reservation = MutableStateFlow(Reservation())
     val reservation = _reservation.asStateFlow()
 
+    private val _deviceToken = MutableStateFlow(String())
+    val deviceToken = _deviceToken.asStateFlow()
+
     fun loadRestaurantName(): String {
         return _restaurantName.value
     }
@@ -68,6 +71,14 @@ class MenuViewModel @Inject constructor(private val repository: FirebaseReposito
 
     fun loadCartList() : List<Menu> {
         return _cartList.value
+    }
+    fun setToken(token: String) = viewModelScope.launch {
+        Log.i("Token", token)
+        _deviceToken.emit(token)
+    }
+
+    fun getDeviceToken(): String {
+        return _deviceToken.value
     }
 
     fun addMenuList(restaurantName: String) = viewModelScope.launch {
@@ -114,7 +125,7 @@ class MenuViewModel @Inject constructor(private val repository: FirebaseReposito
 
     fun addOrder(restaurantName: String, order :Order) = viewModelScope.launch {
         runCatching {
-            repository.updateOrderMenu(restaurantName, Util.getToken(), order)
+            repository.updateOrderMenu(restaurantName, getDeviceToken(), order)
         }.onSuccess {isSuccess ->
             Log.i("메뉴주문성공", isSuccess.toString())
         }. onFailure { exception ->
@@ -131,10 +142,13 @@ class MenuViewModel @Inject constructor(private val repository: FirebaseReposito
             // 전체 리스트 조회
 
             value.documents.forEach { documentSnapshot ->
-                if (documentSnapshot.id.equals(Util.getToken())) {
+                if (documentSnapshot.id == getDeviceToken()) {
+                    Log.e("dc.ids pass","!!")
                     _reservation.emit(documentSnapshot.toObjectNonNull())
                 }
-
+                Log.e("dc.ids",documentSnapshot.id)
+                Log.e("devtoken",getDeviceToken())
+                Log.e("checkMyReservation documentSnapshot", documentSnapshot.data.toString())
             }
 
         }
