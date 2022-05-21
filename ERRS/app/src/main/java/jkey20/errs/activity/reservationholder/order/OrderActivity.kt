@@ -2,6 +2,7 @@ package jkey20.errs.activity.reservationholder.order
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
@@ -46,35 +47,65 @@ class OrderActivity : BaseActivity<ActivityOrderBinding, MenuViewModel>(
         }
 
         binding.btnOrder.setOnClickListener {
-            val reservation = vm.loadReservation()
+            val orderList = vm.loadReservation().order.menuList.toMutableList()
             val cartList = (binding.rvOrder.adapter as OrderAdapter).currentList.toMutableList()
-            reservation.order.menuList.forEach { reservationMenu ->
-                Log.e("RESERVATION MENU", reservationMenu.toString())
-                cartList.forEach { cartMenu ->
-                    if (cartMenu.menu.equals(reservationMenu.menu)) {
-                        val newCartMenu = reservationMenu.copy(count = reservationMenu.count + 1)
-                            //cartMenu.copy(count = cartMenu.count + 1)
-                        Log.e("NEWCARTMENU", newCartMenu.toString())
-                        val index = cartList.indexOf(cartMenu)
-                        cartList.set(index, newCartMenu)
-                    }
+            val tmpList = mutableListOf<Menu>()
 
+
+
+            cartList.forEach { cartMenu ->
+                tmpList.add(cartMenu.menu)
+            }
+
+            // 오더 리스트에 cartList에 있는 값중 같은게 있는지 찾고 있다면 combineList에 해당 메뉴의 카운트값을 늘리고 cartList에서 삭제.
+            orderList.forEach { reservationMenu ->
+                Log.e("RESERVATION MENU", reservationMenu.toString())
+                if (tmpList.contains(reservationMenu.menu)) {
+                    orderList.set(
+                        orderList.indexOf(reservationMenu),
+                        reservationMenu.copy(
+                            count = reservationMenu.count + cartList[tmpList.indexOf(reservationMenu.menu)].count
+                        )
+                    )
+                    tmpList.remove(reservationMenu.menu)
                 }
-//                if(cartList.contains(reservationMenu)){
-//                   val newCartMenu =  cartList[cartList.indexOf(reservationMenu)].copy(count = cartList[cartList.indexOf(reservationMenu)].count + 1)
-//                   Log.e("NEWCARTMENU", newCartMenu.toString())
-//                    cartList.set(cartList.indexOf(reservationMenu), newCartMenu)
+//
+//                cartList.forEach { cartMenu ->
+//                    Log.e("cartMenu", cartMenu.toString())
+//                    if (cartMenu.menu.equals(reservationMenu.menu)) {
+//                        val newCartMenu = reservationMenu.copy(count = reservationMenu.count + cartMenu.count)
+//                        Log.e("NEWCARTMENU", newCartMenu.toString())
+//                        val index = orderList.indexOf(reservationMenu)
+//                        combineList.set(index, newCartMenu)
+//                        // reservation.order.menuList = newList
+//                    } else {
+//                       //  newList.add(reservationMenu)
+//                        val newList = reservation.order.menuList.toMutableList()
+//                        newList.add(cartMenu)
+//                        reservation.order.menuList = newList
+//                    }
 //                }
             }
-            cartList.forEach { cartMenu ->
-                Log.e("ORDER BUtton", cartMenu.toString())
+            tmpList.forEach { menu ->
+                orderList.add(CartMenu(menu, count = 1))
+            }
+            orderList.forEach { cartMenu ->
+                Log.e("cartList", cartMenu.toString())
             }
 
+            cartList.forEach { cartMenu ->
+                Log.e("cartList", cartMenu.toString())
+            }
+            tmpList.forEach { menu ->
+                Log.e("tmpList", menu.toString())
+            }
 
             vm.addOrder(
                 vm.loadRestaurantName(),
-                Order(menuList = cartList, request = " " + binding.etRequest.text.toString())
+                Order(menuList = orderList, request = " " + binding.etRequest.text.toString())
             )
+
+            Toast.makeText(this, "주문이 접수됐습니다.",Toast.LENGTH_SHORT).show()
         }
 
         vm.deviceToken.collectWithLifecycle(this) { deviceToken ->

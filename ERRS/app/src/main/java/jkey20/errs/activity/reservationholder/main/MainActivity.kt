@@ -1,5 +1,7 @@
 package jkey20.errs.activity.reservationholder.main
 
+import android.app.AlertDialog
+import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
@@ -33,11 +35,7 @@ class MainActivity : BaseActivity<ActivityReservationholderMainBinding, MainView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-
-       // setToken()
-
         vm.setToken(Util.getToken())
-
 //        val restaurantName = setRestaurantName()
 //
 //        vm.setRestaurantName(restaurantName)
@@ -56,39 +54,6 @@ class MainActivity : BaseActivity<ActivityReservationholderMainBinding, MainView
             }
         }
 
-        vm.deviceToken.collectWithLifecycle(this){
-            val restaurantName = setRestaurantName()
-            vm.setRestaurantName(restaurantName)
-
-            Log.e("deviceToken CWC","!!")
-        }
-
-        vm.restaurantName.collectWithLifecycle(this) {
-            vm.checkMyReservation(vm.loadRestaurantName()) // TODO: 1. 예약 확인 -> 내 예약이 있는지 여부, 전체 예약 리스트 가짐
-            vm.addRealtimeUpdate(vm.loadRestaurantName())
-            Log.e("restaurantName CWC","!!")
-        }
-
-        vm.isReserved.collectWithLifecycle(this) { isReserved -> // TODO: 2.  예약이 있는지 여부에 따라 동작
-            if (isReserved.equals("false")) {
-                vm.createReservation()
-            }
-
-            Log.e("isReserved CWC","!!")
-        }
-
-        vm.reservation.collectWithLifecycle(this) { reservation ->
-            if(!reservation.equals(Reservation())) {
-                (binding.rvOrdersStaus.adapter as OrdersStatusAdapter).submitList(reservation.order.menuList)
-                if (vm.getIsReserved().equals("false")) {
-                    vm.addReservation(vm.loadRestaurantName(), vm.loadReservation())
-                } else {
-                    vm.addMyWaitingNumber()
-                }
-            }
-            Log.e("reservation CWC","!!")
-        }
-
         binding.btnReservationCancel.setOnClickListener {
             vm.cancelReservation(vm.loadRestaurantName())
             finish()
@@ -101,16 +66,52 @@ class MainActivity : BaseActivity<ActivityReservationholderMainBinding, MainView
             intent.putExtra("restaurantName", restaurantName)
             startActivity(intent)
         }
+
+        vm.deviceToken.collectWithLifecycle(this){
+            val restaurantName = setRestaurantName()
+            vm.setRestaurantName(restaurantName)
+            Log.e("deviceToken CWC","!!")
+        }
+
+        vm.restaurantName.collectWithLifecycle(this) {
+            vm.checkMyReservation(vm.loadRestaurantName()) // TODO: 1. 예약 확인 -> 내 예약이 있는지 여부, 전체 예약 리스트 가짐
+
+            Log.e("restaurantName CWC","!!")
+        }
+
+        vm.isReserved.collectWithLifecycle(this) { isReserved -> // TODO: 2.  예약이 있는지 여부에 따라 동작
+            if (isReserved.equals("false")) {
+                vm.createReservation()
+            }
+            //vm.addRealtimeUpdate(vm.loadRestaurantName())
+            Log.e("isReserved CWC","!!")
+        }
+
+        vm.reservation.collectWithLifecycle(this) { reservation ->
+            if(!reservation.equals(Reservation())) {
+                (binding.rvOrdersStaus.adapter as OrdersStatusAdapter).submitList(reservation.order.menuList)
+                if (vm.getIsReserved().equals("false")) {
+                    vm.addReservation(vm.loadRestaurantName(), vm.loadReservation())
+                } else {
+                    vm.addMyWaitingNumber()
+                }
+            }
+            vm.addRealtimeUpdate(vm.loadRestaurantName())
+            Log.e("reservation CWC","!!")
+        }
+
     }
 
     private fun setRestaurantName() : String{
         // RETURN QR INFO
         return "320"
     }
+    
 
     override fun onDestroy() {
         super.onDestroy()
         vm.removeRealTimeUpdate()
         Log.e("REMOVE REALTIME UPDATE", "!!")
     }
+
 }

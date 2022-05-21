@@ -46,7 +46,7 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
     private val _waitingTeamsNumber = MutableStateFlow("0")
     val waitingTeamsNumber = _waitingTeamsNumber.asStateFlow()
 
-    private val _myWaitingNumber = MutableStateFlow("-1")
+    private val _myWaitingNumber = MutableStateFlow(" ")
     val myWaitingNumber = _myWaitingNumber.asStateFlow()
 
 
@@ -68,7 +68,6 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
     }
 
     fun setToken(token: String) = viewModelScope.launch {
-        Log.i("Token", token)
         _deviceToken.emit(token)
     }
 
@@ -86,38 +85,50 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
 
     fun checkMyReservation(restaurantName: String) = viewModelScope.launch {
         runCatching {
+
+            Log.e("checkMyReservation 시작", "레스토랑이름: " + restaurantName)
             repository.readReservationList(restaurantName)
         }.onSuccess { value ->
-
+            Log.e("checkMyReservation 완료", "!")
             // 내 예약 존재하는지 확인
             var isExistReservation = false
             value.documents.forEach { documentSnapshot ->
+                Log.e("checkMyReservation 예약존재 확인", "!")
                 if (documentSnapshot.id.equals(getDeviceToken())) {
                     isExistReservation = true
                 }
             }
+            Log.e("예약여부 :", isExistReservation.toString())
+            _isReserved.emit(isExistReservation.toString())
+
+
 
             // 전체 리스트 조회
             val list = mutableListOf<Reservation>()
             value.documents.forEach { documentSnapshot ->
+                Log.e("checkMyReservation 전체리스트 확인", "!")
                 if (documentSnapshot.id.equals(getDeviceToken())) {
                     _reservation.emit(documentSnapshot.toObjectNonNull())
                 }
                 list.add(documentSnapshot.toObjectNonNull())
             }
+            Log.e("list", list.toString())
             _reservationList.emit(list)
-            _isReserved.emit(isExistReservation.toString())
+
         }
     }
 
     fun addMyWaitingNumber() = viewModelScope.launch {
+        Log.e("addMyWaitingNumber 시작", "!")
         val list = _reservationList.value.toMutableList()
         list.sortBy { it.reservationNumber }
         val waitingNumber = list.indexOf(_reservation.value)
+        Log.e("addMyWaitingNumber 완료", "!")
         _myWaitingNumber.emit(waitingNumber.toString())
     }
 
     fun createReservation() = viewModelScope.launch {
+        Log.e("createReservation", "!")
         _reservation.emit(
             Reservation(
                 reservationNumber = createNewReservationNumber(),
@@ -145,6 +156,7 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
 
     fun addReservation(restaurantName: String, reservation: Reservation) = viewModelScope.launch {
         runCatching {
+            Log.e("addReservation 시작", "!")
             repository.createReservation(
                 restaurantName,
                 reservation,
@@ -166,6 +178,7 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
 
     fun cancelReservation(restaurantName: String) = viewModelScope.launch {
         runCatching {
+            Log.e("cancelReservation 시작", "!")
             repository.deleteReservation(restaurantName, getDeviceToken())
         }.onSuccess { isSuccess ->
             Log.i("예약취소 성공", isSuccess.toString())
@@ -204,17 +217,17 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
 
      */
     fun addRealtimeUpdate(restaurantName: String) = viewModelScope.launch {
+        Log.e("addRealtimeUpdate 시작", "!")
         repository.readRealtimeUpdate(restaurantName).collect { value ->
             // 1
             _waitingTeamsNumber.emit(value.size().toString())
             // 2
             for (dc in value!!.documentChanges) {
-                Log.e("DC ID: ", dc.document.id)
 
                 when (dc.type) {
 
                     DocumentChange.Type.REMOVED -> {
-                        Log.e("DC REMOVED", dc.document.data.toString())
+                        Log.e("제거", dc.document.data.toString())
                         val list = mutableListOf<Reservation>()
                         value.documents.forEach { documentSnapshot ->
                             val reservation: Reservation = documentSnapshot.toObjectNonNull()
@@ -228,10 +241,9 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
                     // 메뉴변경시
                     DocumentChange.Type.MODIFIED -> {
                         if (dc.document.id.equals(getDeviceToken())) {
-                            Log.e("DC MODIFIED1", dc.document.data.toString())
+                            Log.e("수정", dc.document.data.toString())
                             _reservation.emit(dc.document.toObjectNonNull())
                         }
-                        Log.e("DC MODIFIED2", dc.document.data.toString())
                         val list = mutableListOf<Reservation>()
                         value.documents.forEach { documentSnapshot ->
                             val reservation: Reservation = documentSnapshot.toObjectNonNull()
@@ -267,10 +279,11 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
 
 
     fun createNewReservationNumber(): String {
+        Log.e("createNewReservationNumber 시작", "!")
         if (_reservationList.value.size > 0) {
             var topNumber = "0"
             _reservationList.value.forEach { reservation ->
-                Log.e("CREATE RN RESERVATION", reservation.reservationNumber)
+                Log.e("예약 번호: ", reservation.reservationNumber)
                 if (reservation.reservationNumber.toInt() >= topNumber.toInt()
                 ) {
                     topNumber = reservation.reservationNumber

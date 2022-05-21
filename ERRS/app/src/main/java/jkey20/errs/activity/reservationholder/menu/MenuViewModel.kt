@@ -128,6 +128,7 @@ class MenuViewModel @Inject constructor(private val repository: FirebaseReposito
             repository.updateOrderMenu(restaurantName, getDeviceToken(), order)
         }.onSuccess {isSuccess ->
             Log.i("메뉴주문성공", isSuccess.toString())
+            checkMyReservation(loadRestaurantName())
         }. onFailure { exception ->
             Log.i("메뉴주문실패", exception.message.toString())
         }
