@@ -10,6 +10,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import jkey20.errs.R
 import jkey20.errs.activity.reservationholder.menudetail.MenuDetailActivity
 import jkey20.errs.activity.reservationholder.order.OrderActivity
+import jkey20.errs.activity.reservationholder.util.Util
 import jkey20.errs.base.BaseActivity
 import jkey20.errs.databinding.ActivityMenuBinding
 import jkey20.errs.model.cart.Cart
@@ -60,7 +61,7 @@ class MenuActivity : BaseActivity<ActivityMenuBinding, MenuViewModel>(
             }
         }
 
-        binding.tvCartCount.setOnClickListener {
+        binding.layoutCart.setOnClickListener {
             val intent = Intent(this, OrderActivity::class.java)
             val cart = Cart(list = vm.loadCartList())
             intent.putExtra("cartList", cart)

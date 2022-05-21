@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.view.menu.MenuView
 import androidx.lifecycle.ViewModel
@@ -44,6 +45,7 @@ class MenuDetailActivity : BaseActivity<ActivityMenuDetailBinding, MenuViewModel
                 putExtra("cart", cart)
             }
             setResult(RESULT_OK, intent)
+            Toast.makeText(this, "장바구니에 메뉴가 담겼습니다.", Toast.LENGTH_SHORT).show()
         }
     }
 }
