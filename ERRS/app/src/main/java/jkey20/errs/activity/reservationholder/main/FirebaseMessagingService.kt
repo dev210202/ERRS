@@ -35,24 +35,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     private fun showNotification(remoteMessage: RemoteMessage){
 
-//        val notification = remoteMessage.notification
-//        Log.e("SHOW NOTIFICATION", " !!")
-//
-//        val intent = Intent(this, MainActivity::class.java)
-//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-//        val pendingIntent = PendingIntent.getActivity(this, 0, intent,
-//            PendingIntent.FLAG_ONE_SHOT) // FLAG_ONE_SHOT
-//        val soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-//        val notificationBuilder = NotificationCompat.Builder(this)
-//            .setSmallIcon(R.mipmap.ic_launcher)
-//            .setContentTitle("title")
-//            .setContentText("body")
-//            .setAutoCancel(true)
-//            .setSound(soundUri)
-//            .setContentIntent(pendingIntent)
-//        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-//        notificationManager.notify(0, notificationBuilder.build())
-
         val intent = Intent(this, MainActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         val pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
@@ -62,8 +44,8 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
             .setSmallIcon(R.drawable.blue_gradient_background)
-            .setContentTitle("title")
-            .setContentText("body")
+            .setContentTitle(remoteMessage.notification?.title)
+            .setContentText(remoteMessage.notification?.body)
             .setAutoCancel(true)
             .setSound(defaultSoundUri)
             .setContentIntent(pendingIntent)

@@ -11,13 +11,13 @@ import jkey20.errs.model.cart.CartMenu
 import jkey20.errs.model.firebase.Menu
 
 class OrdersStatusAdapter(
-    private val onMenuOrderButtonClick : (CartMenu) -> Unit
+    private val onMenuOrderRemoveButtonClicked : (CartMenu) -> Unit
 ) : ListAdapter<CartMenu, OrdersStatusAdapter.ViewHolder>(diffUtil) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding =
             ItemMenuOrderBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ViewHolder(binding, onMenuOrderButtonClick)
+        return ViewHolder(binding, onMenuOrderRemoveButtonClicked)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -27,12 +27,12 @@ class OrdersStatusAdapter(
 
     class ViewHolder(
         private val binding: ItemMenuOrderBinding,
-        private val onMenuOrderButtonClick : (CartMenu) -> Unit
+        private val onMenuOrderRemoveButtonClicked : (CartMenu) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(cartMenu: CartMenu) {
             binding.cartMenu = cartMenu
-            binding.btnMenuStatus.setOnClickListener {
-                onMenuOrderButtonClick(cartMenu)
+            binding.ibClose.setOnClickListener {
+                onMenuOrderRemoveButtonClicked(cartMenu)
             }
         }
     }

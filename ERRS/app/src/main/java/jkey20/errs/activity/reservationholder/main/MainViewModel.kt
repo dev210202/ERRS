@@ -33,6 +33,9 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
     private val _isReserved = MutableStateFlow(String())
     val isReserved = _isReserved.asStateFlow()
 
+    private val _isCanceled = MutableStateFlow(false)
+    val isCanceled = _isCanceled.asStateFlow()
+
     private val _reservationList = MutableStateFlow(listOf<Reservation>())
     val reservationList = _reservationList.asStateFlow()
 
@@ -133,22 +136,7 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
             Reservation(
                 reservationNumber = createNewReservationNumber(),
                 time = getCurrentTime(),
-                order = Order(
-                    menuList = mutableListOf(
-                        CartMenu(
-                            Menu(
-                                name = "삼각김밥",
-                                status = "접수완료"
-                            )
-                        ),
-                        CartMenu(
-                            Menu(
-                                name = "사각김밥",
-                                status = "접수미완"
-                            )
-                        )
-                    )
-                ),
+                order = Order(),
                 token = getDeviceToken()
             )
         )
@@ -169,6 +157,7 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
                 list.add(reservation)
                _reservationList.emit(list)
                 addMyWaitingNumber()
+                _isReserved.value = "true"
             }
         }.onFailure { error ->
             Log.e("error", error.message.toString())
@@ -228,6 +217,11 @@ class MainViewModel @Inject constructor(private val repository: FirebaseReposito
 
                     DocumentChange.Type.REMOVED -> {
                         Log.e("제거", dc.document.data.toString())
+                        Log.e("@#@reservationNumber@", dc.document.data.getValue("reservationNumber").toString())
+                        Log.e("@#@reservationNumber@@", _reservation.value.reservationNumber.toString())
+                        if(dc.document.data.get("reservationNumber")!!.equals(_reservation.value.reservationNumber)){
+                            _isCanceled.value = true
+                        }
                         val list = mutableListOf<Reservation>()
                         value.documents.forEach { documentSnapshot ->
                             val reservation: Reservation = documentSnapshot.toObjectNonNull()

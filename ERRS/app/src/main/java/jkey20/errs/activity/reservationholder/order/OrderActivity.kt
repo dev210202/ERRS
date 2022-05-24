@@ -59,7 +59,10 @@ class OrderActivity : BaseActivity<ActivityOrderBinding, MenuViewModel>(
 
             // 오더 리스트에 cartList에 있는 값중 같은게 있는지 찾고 있다면 combineList에 해당 메뉴의 카운트값을 늘리고 cartList에서 삭제.
             orderList.forEach { reservationMenu ->
-                Log.e("RESERVATION MENU", reservationMenu.toString())
+                Log.e("RESERVATION MENU", reservationMenu.menu.toString())
+                tmpList.forEach { menu ->
+                    Log.e("TMP MENU", menu.toString())
+                }
                 if (tmpList.contains(reservationMenu.menu)) {
                     orderList.set(
                         orderList.indexOf(reservationMenu),
@@ -69,22 +72,6 @@ class OrderActivity : BaseActivity<ActivityOrderBinding, MenuViewModel>(
                     )
                     tmpList.remove(reservationMenu.menu)
                 }
-//
-//                cartList.forEach { cartMenu ->
-//                    Log.e("cartMenu", cartMenu.toString())
-//                    if (cartMenu.menu.equals(reservationMenu.menu)) {
-//                        val newCartMenu = reservationMenu.copy(count = reservationMenu.count + cartMenu.count)
-//                        Log.e("NEWCARTMENU", newCartMenu.toString())
-//                        val index = orderList.indexOf(reservationMenu)
-//                        combineList.set(index, newCartMenu)
-//                        // reservation.order.menuList = newList
-//                    } else {
-//                       //  newList.add(reservationMenu)
-//                        val newList = reservation.order.menuList.toMutableList()
-//                        newList.add(cartMenu)
-//                        reservation.order.menuList = newList
-//                    }
-//                }
             }
             tmpList.forEach { menu ->
                 orderList.add(CartMenu(menu, count = 1))
