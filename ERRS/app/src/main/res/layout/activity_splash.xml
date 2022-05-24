@@ -39,5 +39,20 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_splash" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:fontFamily="@font/nanumsquare_r"
+            android:gravity="center"
+            android:text="정보를 불러오는데 실패했습니다.\n 새로고침 버튼을 눌러주세요!"
+            android:visibility="invisible"
+            android:textColor="@color/white"
+            android:textSize="24dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/iv_refresh" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
