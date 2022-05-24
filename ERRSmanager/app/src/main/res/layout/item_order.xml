@@ -6,8 +6,8 @@
     <data>
 
         <variable
-            name="menu"
-            type="jkey20.errs.model.firebase.Menu" />
+            name="cartMenu"
+            type="jkey20.errs.manager.model.firebase.CartMenu" />
     </data>
 
     <LinearLayout
@@ -21,21 +21,47 @@
             android:layout_weight="8">
 
             <com.google.android.material.textview.MaterialTextView
-                android:layout_marginHorizontal="16dp"
                 android:id="@+id/tv_menu_name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
                 android:layout_marginBottom="16dp"
                 android:fontFamily="@font/nanumsquare_eb"
-                android:text="@{menu.name}"
+                android:text="@{cartMenu.menu.name}"
                 android:textColor="@color/black"
                 android:textSize="24dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/tv_menu_count"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_menu_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:text="@{Integer.toString(cartMenu.count)}"
+                android:textColor="@color/blue"
+                android:textSize="16dp"
+
+                android:fontFamily="@font/nanumsquare_r"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/tv_menu_status"
+                app:layout_constraintTop_toTopOf="parent" />/
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_menu_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{cartMenu.menu.status}"
+                android:textColor="@color/black"
+                android:textSize="16dp"
+
+                android:fontFamily="@font/nanumsquare_b"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -50,7 +76,6 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
 
@@ -67,7 +92,7 @@
                     android:id="@+id/btn_menu_cancel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
+                    android:layout_marginStart="8dp"
                     android:background="@drawable/order_close_background"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
